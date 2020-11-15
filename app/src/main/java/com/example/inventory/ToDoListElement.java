@@ -3,12 +3,10 @@ package com.example.inventory;
 public class ToDoListElement {
 
     String mToDoListTextView;
-    int mToDoListImageView;
     boolean mReminderImageView;
 
-    ToDoListElement(String toDoListTextView,int toDoListImageView,boolean reminderImageView)
+    ToDoListElement(String toDoListTextView,boolean reminderImageView)
     {
-        mToDoListImageView = toDoListImageView;
         mToDoListTextView = toDoListTextView;
         mReminderImageView = reminderImageView;
     }
@@ -18,10 +16,6 @@ public class ToDoListElement {
         mToDoListTextView = toDoListTextView;
     }
 
-    public void setToDoListImageView(int toDoListImageView)
-    {
-        mToDoListImageView = toDoListImageView;
-    }
 
     public void setReminderImageView(boolean reminderImageView)
     {
@@ -33,10 +27,6 @@ public class ToDoListElement {
         return mToDoListTextView;
     }
 
-    public int getToDoListImageView()
-    {
-        return mToDoListImageView;
-    }
 
     public boolean getReminderImageView()
     {

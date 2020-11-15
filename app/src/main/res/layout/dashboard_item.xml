@@ -2,31 +2,22 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent">
 
-    <ImageView
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignParentLeft="true"
-        android:layout_margin="8dp"
-        android:id="@+id/dashboardItemImageView"
-        android:backgroundTint="@color/black"
-        android:theme="@style/CardView"/>
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/dashboardItemTextView"
-        android:layout_toRightOf="@id/dashboardItemImageView"
+        android:layout_marginLeft="10dp"
         android:textSize="20sp"
         android:layout_margin="8dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         android:textStyle="bold"/>
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/dashboardItemImageView"
         android:textSize="16sp"
         android:layout_marginBottom="8dp"
-        android:layout_marginLeft="8dp"
+        android:layout_marginLeft="10dp"
         android:layout_below="@id/dashboardItemTextView"
         android:id="@+id/itemCount"
         android:textAppearance="@style/TextAppearance.AppCompat.Caption"/>

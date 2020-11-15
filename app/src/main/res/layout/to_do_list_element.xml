@@ -8,27 +8,21 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:elevation="@dimen/cardview_default_elevation"
-        android:layout_margin="8dp"
-        card_view:cardCornerRadius="8dp">
+        card_view:cardCornerRadius="10dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-        <ImageView
-            android:layout_width="15dp"
             android:layout_height="match_parent"
-            android:layout_alignParentLeft="true"
-            android:layout_margin="4dp"
-            android:id="@+id/toDoListImageView"
-            android:background="@color/design_default_color_error"/>
+            android:padding="8dp">
+
 
             <com.google.android.material.checkbox.MaterialCheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/toDoListImageView"
                 android:layout_centerVertical="true"
-                android:id="@+id/toDoListCheckBox"/>
+                android:id="@+id/toDoListCheckBox"
+                android:theme="@style/Widget.AppCompat.CompoundButton.CheckBox"
+                android:layout_marginLeft="10dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -36,7 +30,8 @@
                 android:singleLine="true"
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@id/toDoListCheckBox"
-                android:id="@+id/toDoListTextView" />
+                android:id="@+id/toDoListTextView"
+                android:textSize="20sp"/>
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -45,7 +40,8 @@
                 android:layout_alignParentRight="true"
                 android:visibility="invisible"
                 android:src="@drawable/ic_baseline_reminder"
-                android:id="@+id/reminderImageView"/>
+                android:id="@+id/reminderImageView"
+                android:layout_marginRight="8dp"/>
 
         </RelativeLayout>
 

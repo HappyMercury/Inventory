@@ -40,17 +40,20 @@ public class LoginActivity extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
 
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken("698187653861-g54mfttbqmvhbspc2742uum5fhjcitif.apps.googleusercontent.com")
+                .requestIdToken("922890224357-alaqa3sorbb0ck649g510u9fp7umnjoe.apps.googleusercontent.com")
                 .requestEmail()
                 .build();
         //922890224357-alaqa3sorbb0ck649g510u9fp7umnjoe.apps.googleusercontent.com
+        //698187653861-g54mfttbqmvhbspc2742uum5fhjcitif.apps.googleusercontent.com
 
         signInClient = GoogleSignIn.getClient(this,gso);
 
         GoogleSignInAccount signInAccount = GoogleSignIn.getLastSignedInAccount(this);
         if(signInAccount != null || firebaseAuth.getCurrentUser() != null){
             Toast.makeText(this, "User is already logged in", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(this,MainActivity.class));
+            Intent intent = new Intent(this,MainActivity.class);
+            intent.putExtra("FragmentToStart",MainActivity.FRAGMENT_DASHBOARD);
+            startActivity(intent);
         }
 
         signIn.setOnClickListener(new View.OnClickListener() {

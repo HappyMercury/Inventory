@@ -9,6 +9,15 @@
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/toDoListListView"/>
+        android:id="@+id/toDoListListView" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_baseline_add_24"
+        android:layout_gravity="bottom|right"
+        android:layout_marginBottom="60dp"
+        android:layout_marginRight="8dp"
+        android:id="@+id/toDoListFloatingActionButton"/>
 
 </FrameLayout>

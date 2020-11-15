@@ -3,13 +3,12 @@ package com.example.inventory;
 public class DashboardItem {
 
     String mCategoryName;
-    int mCategoryImageResource;
     int mCategoryCount;
 
-    DashboardItem(String categoryName,int categoryImageResource,int categoryCount)
+    DashboardItem(String categoryName,int categoryCount)
     {
         mCategoryName = categoryName;
-        mCategoryImageResource = categoryImageResource;
+
         mCategoryCount = categoryCount;
     }
 
@@ -18,10 +17,6 @@ public class DashboardItem {
         mCategoryName = categoryName;
     }
 
-    public void setCategoryImageResource(int categoryImageResource)
-    {
-        mCategoryImageResource = categoryImageResource;
-    }
 
     public void setCategoryCount(int categoryCount)
     {
@@ -33,12 +28,8 @@ public class DashboardItem {
         return mCategoryName;
     }
 
-    public int getCategoryImageResource()
-    {
-        return mCategoryImageResource;
-    }
 
-    public int getCatgoeyCount()
+    public int getCategoryCount()
     {
         return mCategoryCount;
     }

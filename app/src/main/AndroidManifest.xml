@@ -10,8 +10,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Inventory">
-        <activity android:name=".CategoryInformation"
-            android:parentActivityName=".MainActivity"></activity>
+        <activity android:name=".NewToDoListItem"></activity>
+        <activity
+            android:name=".CategoryInformation"
+            android:parentActivityName=".MainActivity" />
         <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,7 +25,7 @@
             android:name=".AddCategory"
             android:label="Add Category"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".MainActivity"></activity>
+        <activity android:name=".MainActivity" />
     </application>
 
 </manifest>

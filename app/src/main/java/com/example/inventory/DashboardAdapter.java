@@ -30,14 +30,11 @@ public class DashboardAdapter extends ArrayAdapter<DashboardItem> {
             mCategoryItem = LayoutInflater.from(getContext()).inflate(R.layout.dashboard_item,parent,false);
         }
 
-        ImageView dashboardItemImageView = mCategoryItem.findViewById(R.id.dashboardItemImageView);
-        dashboardItemImageView.setImageResource(currentItem.getCategoryImageResource());
-
         TextView dashboardItemTextView = mCategoryItem.findViewById(R.id.dashboardItemTextView);
         dashboardItemTextView.setText(currentItem.getCategoryName());
 
         TextView categoryCountTextView = mCategoryItem.findViewById(R.id.itemCount);
-        categoryCountTextView.setText("Item Count: "+(String.valueOf(currentItem.getCatgoeyCount())));
+        categoryCountTextView.setText("Item Count: "+(String.valueOf(currentItem.getCategoryCount())));
 
         return mCategoryItem;
 

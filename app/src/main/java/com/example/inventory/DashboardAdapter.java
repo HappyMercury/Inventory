@@ -36,6 +36,9 @@ public class DashboardAdapter extends ArrayAdapter<DashboardItem> {
         TextView dashboardItemTextView = mCategoryItem.findViewById(R.id.dashboardItemTextView);
         dashboardItemTextView.setText(currentItem.getCategoryName());
 
+        TextView categoryCountTextView = mCategoryItem.findViewById(R.id.itemCount);
+        categoryCountTextView.setText("Item Count: "+(String.valueOf(currentItem.getCatgoeyCount())));
+
         return mCategoryItem;
 
     }

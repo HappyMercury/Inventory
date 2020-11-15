@@ -4,11 +4,13 @@ public class DashboardItem {
 
     String mCategoryName;
     int mCategoryImageResource;
+    int mCategoryCount;
 
-    DashboardItem(String categoryName,int categoryImageResource)
+    DashboardItem(String categoryName,int categoryImageResource,int categoryCount)
     {
         mCategoryName = categoryName;
         mCategoryImageResource = categoryImageResource;
+        mCategoryCount = categoryCount;
     }
 
     public void setCategoryName(String categoryName)
@@ -21,6 +23,11 @@ public class DashboardItem {
         mCategoryImageResource = categoryImageResource;
     }
 
+    public void setCategoryCount(int categoryCount)
+    {
+        mCategoryCount = categoryCount;
+    }
+
     public String getCategoryName()
     {
         return mCategoryName;
@@ -29,6 +36,11 @@ public class DashboardItem {
     public int getCategoryImageResource()
     {
         return mCategoryImageResource;
+    }
+
+    public int getCatgoeyCount()
+    {
+        return mCategoryCount;
     }
 
 }

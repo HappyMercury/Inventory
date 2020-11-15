@@ -7,6 +7,9 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -24,8 +27,16 @@ public class ToDoListFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    ArrayList<ToDoListElement> toDoListElementArrayList = new ArrayList<>();
+
     public ToDoListFragment() {
-        // Required empty public constructor
+
+        toDoListElementArrayList.add(new ToDoListElement("Get Groceries",R.color.main_green_color,true));
+        toDoListElementArrayList.add(new ToDoListElement("Get Groceries",R.color.blue_btn_bg_color,true));
+        toDoListElementArrayList.add(new ToDoListElement("Get Groceries",R.color.red_btn_bg_color,false));
+        toDoListElementArrayList.add(new ToDoListElement("Get Groceries",R.color.main_green_color,false));
+        toDoListElementArrayList.add(new ToDoListElement("Get Groceries",R.color.main_green_color,true));
+        toDoListElementArrayList.add(new ToDoListElement("Get Groceries",R.color.main_green_color,false));
     }
 
     /**
@@ -59,6 +70,14 @@ public class ToDoListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_to_do_list, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_to_do_list, container, false);
+
+        ListView toDoListListView = rootView.findViewById(R.id.toDoListTextView);
+
+
+        ToDoListAdapter toDoListArrayAdapter = new ToDoListAdapter(getContext(),0,toDoListElementArrayList);
+        toDoListListView.setAdapter(toDoListArrayAdapter);
+
+        return rootView;
     }
 }

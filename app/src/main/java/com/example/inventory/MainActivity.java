@@ -2,12 +2,16 @@ package com.example.inventory;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -76,13 +80,13 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void logout(View view) {
+    public void logout() {
         FirebaseAuth.getInstance().signOut();
         GoogleSignIn.getClient(this, new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build())
                 .signOut().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                startActivity(new Intent(view.getContext(),LoginActivity.class));
+                startActivity(new Intent(getApplicationContext(),LoginActivity.class));
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -90,5 +94,38 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Signout Failed", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @SuppressLint("RestrictedApi")
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.appbar_menu,menu);
+
+        if(menu instanceof MenuBuilder){
+
+            MenuBuilder menuBuilder = (MenuBuilder) menu;
+            menuBuilder.setOptionalIconsVisible(true);
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        switch(item.getItemId())
+        {
+            case R.id.logout:
+                logout();
+                break;
+            case R.id.help:
+                Toast.makeText(this, "You Clicked Help", Toast.LENGTH_SHORT).show();
+                break;
+                default:
+                    super.onOptionsItemSelected(item);
+        }
+        return true;
     }
 }

@@ -1,5 +1,7 @@
 package com.example.inventory;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -8,8 +10,10 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -36,9 +40,9 @@ public class DashboardFragment extends Fragment {
     ArrayList<DashboardItem> dashboardList = new ArrayList<>();
 
     public DashboardFragment() {
-        dashboardList.add(new DashboardItem("Groceries",R.drawable.ic_baseline_trial));
-        dashboardList.add(new DashboardItem("Home Appliances",R.drawable.ic_baseline_trial));
-        dashboardList.add(new DashboardItem("Kitchen",R.drawable.ic_baseline_trial));
+        dashboardList.add(new DashboardItem("Groceries",R.drawable.ic_baseline_trial,5));
+        dashboardList.add(new DashboardItem("Home Appliances",R.drawable.ic_baseline_trial,6));
+        dashboardList.add(new DashboardItem("Kitchen",R.drawable.ic_baseline_trial,7));
         // Required empty public constructor
     }
 
@@ -82,11 +86,37 @@ public class DashboardFragment extends Fragment {
         dashboardFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent addCategoryIntent = new Intent(getActivity().getApplicationContext(),AddCategory.class);
-                startActivity(addCategoryIntent);
+                //Intent addCategoryIntent = new Intent(getActivity().getApplicationContext(),AddCategory.class);
+                //startActivity(addCategoryIntent);
+
+                AlertDialog.Builder addCategoryAlertDialogBuilder =new  AlertDialog.Builder(getContext());
+                addCategoryAlertDialogBuilder.setTitle("Add Category");
+
+                View alertDialogLayout = getLayoutInflater().inflate(R.layout.add_category_alertdialog,null);
+                addCategoryAlertDialogBuilder.setView(alertDialogLayout);
+
+                addCategoryAlertDialogBuilder.setCancelable(true)
+                        .setPositiveButton("CREATE", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Toast.makeText(getActivity().getBaseContext(), "Category Created", Toast.LENGTH_SHORT).show();
+                                Intent addCategoryIntent = new Intent(getActivity().getApplicationContext(),MainActivity.class);
+                                startActivity(addCategoryIntent);
+                            }
+                        });
+
+                AlertDialog dialog = addCategoryAlertDialogBuilder.create();
+                dialog.show();
             }
         });
         dashboardListView.setAdapter(dashboardAdapter);
+        dashboardListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getActivity(),CategoryInformation.class);
+                startActivity(intent);
+            }
+        });
         return rootView;
     }
 }

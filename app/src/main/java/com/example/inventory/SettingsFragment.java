@@ -1,12 +1,20 @@
 package com.example.inventory;
 
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.GlideBuilder;
+import com.bumptech.glide.request.target.Target;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,14 +36,7 @@ public class SettingsFragment extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SettingsFragment.
-     */
+
     // TODO: Rename and change types and number of parameters
     public static SettingsFragment newInstance(String param1, String param2) {
         SettingsFragment fragment = new SettingsFragment();
@@ -58,7 +59,21 @@ public class SettingsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_settings, container, false);
+        //Uri profileImageURL = LoginActivity.signInAccount.getPhotoUrl();
+        //Log.i("url",profileImageURL.toString());
+        View rootView = inflater.inflate(R.layout.fragment_settings, container, false);
+        ImageView profileImageView = rootView.findViewById(R.id.profileImageView);
+        try {
+            Glide.with(this)
+                    .load("https://image.tmdb.org/t/p/w92/dRLSoufWtc16F5fliK4ECIVs56p.jpg")
+                    .circleCrop()
+                    .into(profileImageView);
+        }
+        catch(Exception e)
+        {
+            Log.i("Error: ",e.toString());
+        }
+
+        return rootView;
     }
 }

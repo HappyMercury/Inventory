@@ -11,15 +11,35 @@
         android:layout_height="wrap_content"
         android:src="@drawable/ic_baseline_add_a_photo_24"
         android:id="@+id/categoryImageView"
-        android:layout_centerInParent="true"/>
+        android:layout_above="@id/categoryActivityTextInputLayout"
+        android:layout_centerHorizontal="true"/>
 
-    <com.google.android.material.textfield.TextInputEditText
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/categoryActivityTextInputLayout"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="20dp"
+        app:hintTextColor="@color/design_default_color_primary_variant"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/categoryNameEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Category Name"
+            android:layout_margin="16dp"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/categoryNameEditText"
-        android:hint="Category Name"
-        android:layout_below="@id/categoryImageView"
-        android:layout_marginTop="20dp"
-        android:layout_centerHorizontal="true"/>
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_baseline_done_24"
+        android:id="@+id/addCategoryFloatingActionButton" />
+
 
 </RelativeLayout>

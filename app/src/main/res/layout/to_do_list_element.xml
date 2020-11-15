@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="@dimen/cardview_default_elevation"
+        android:layout_margin="8dp"
+        card_view:cardCornerRadius="8dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_width="15dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_margin="4dp"
+            android:id="@+id/toDoListImageView"
+            android:background="@color/design_default_color_error"/>
+
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/toDoListImageView"
+                android:layout_centerVertical="true"
+                android:id="@+id/toDoListCheckBox"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/toDoListCheckBox"
+                android:id="@+id/toDoListTextView" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:visibility="invisible"
+                android:src="@drawable/ic_baseline_reminder"
+                android:id="@+id/reminderImageView"/>
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</RelativeLayout>

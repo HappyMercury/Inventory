@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AddNewItem">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/itemImage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:elevation="8dp"
+                    android:src="@raw/no_image"
+                    android:layout_alignParentTop="true"/>
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_baseline_add_a_photo_24"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignBottom="@id/itemImage"
+                    android:id="@+id/itemImageFloatingActionButton"
+                    android:layout_margin="10dp" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:theme="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:id="@+id/itemNameTextInputLayout"
+                    android:layout_margin="10dp"
+                    android:layout_below="@id/itemImage">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Item Name"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Item Count:"
+                    android:id="@+id/itemCountHeading"
+                    android:layout_below="@id/itemNameTextInputLayout"
+                    android:layout_marginLeft="10dp"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_below="@id/itemCountHeading"
+                android:layout_marginLeft="10dp"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/itemLinearLayout">
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:id="@+id/increment"
+                    android:elevation="@dimen/cardview_default_radius"
+                    android:src="@drawable/ic_baseline_add_24"
+                    android:background="@color/purple_500"
+                    android:layout_gravity="center_vertical"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/count"
+                    android:text="0"
+                    android:textSize="40sp"
+                    android:paddingRight="10dp"
+                    android:paddingLeft="10dp"
+                    android:fontFamily="sans-serif-black"/>
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:id="@+id/decrement"
+                    android:src="@drawable/ic_baseline_minus_24"
+                    android:background="@color/purple_500"
+                    android:layout_gravity="center_vertical"/>
+
+            </LinearLayout>
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="SAVE"
+                    android:layout_below="@id/itemLinearLayout"
+                    android:layout_centerHorizontal="true"
+                    android:layout_margin="50dp"
+                    android:id="@+id/itemSaveButton"/>
+
+
+
+            </RelativeLayout>
+
+
+
+    </ScrollView>
+
+</RelativeLayout>

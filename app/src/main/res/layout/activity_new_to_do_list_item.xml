@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".NewToDoListItem">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="@dimen/cardview_default_elevation"
+        android:layout_margin="8dp"
+        app:cardCornerRadius="@dimen/cardview_default_radius"
+        android:outlineAmbientShadowColor="@color/design_default_color_primary_variant"
+        android:id="@+id/cardView">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/text_margin">
+
+            <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:id="@+id/toDoListTitleTextInputLayout"
+                android:layout_marginTop="16dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Title"
+                android:id="@+id/toDoListTitleTextInput"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Set reminder time:"
+                android:layout_below="@id/toDoListTitleTextInputLayout"
+                android:id="@+id/reminderHeader"
+                android:layout_marginTop="30dp"
+                android:textStyle="bold"
+                android:textSize="20sp"/>
+
+            <androidx.appcompat.widget.AppCompatToggleButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/reminderHeader"
+                android:id="@+id/toDoListToggleButton"
+                android:layout_marginTop="10dp"
+                android:layout_centerHorizontal="true"
+                android:checked="false"/>
+
+            <DatePicker
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/toDoListToggleButton"
+                android:id="@+id/toDoListDatePicker"
+                android:visibility="gone"
+                android:layout_marginTop="10dp"/>
+
+            <TimePicker
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/reminderClock"
+                android:layout_below="@id/toDoListDatePicker"
+                android:layout_marginTop="30dp"
+                android:visibility="gone"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_below="@id/reminderClock"
+                android:id="@+id/saveToDoListElement"
+                android:text="SAVE"
+                android:layout_centerHorizontal="true"/>
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    </ScrollView>
+
+
+
+</RelativeLayout>

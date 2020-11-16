@@ -83,7 +83,7 @@ public class DashboardFragment extends Fragment {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 Toast.makeText(getActivity().getBaseContext(), "Category Created", Toast.LENGTH_SHORT).show();
-                                Intent addCategoryIntent = new Intent(getActivity().getApplicationContext(),MainActivity.class);
+                                Intent addCategoryIntent = new Intent(getActivity().getApplicationContext(),CategoryInformation.class);
                                 startActivity(addCategoryIntent);
                             }
                         });

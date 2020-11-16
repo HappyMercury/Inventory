@@ -3,6 +3,7 @@ package com.example.inventory;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
+import pl.droidsonroids.gif.GifImageView;
+
 public class CategoryInformation extends AppCompatActivity {
 
     @SuppressLint("ResourceType")
@@ -23,26 +26,23 @@ public class CategoryInformation extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category_information);
 
-        ArrayList<String> itemArrayList = new ArrayList<String>();
-        itemArrayList.add("Harsh");
-        itemArrayList.add("Harsh");
-        itemArrayList.add("Harsh");
-        itemArrayList.add("Harsh");
+        ArrayList<ItemListElement> itemArrayList = new ArrayList<ItemListElement>();
+        itemArrayList.add(new ItemListElement("Papita",true));
+        itemArrayList.add(new ItemListElement("Banana",false));
 
-        ArrayAdapter<String> itemArrayAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1,itemArrayList);
+        ItemListElementAdapter itemListElementAdapter = new ItemListElementAdapter(this,0,itemArrayList);
 
         ListView itemListView = findViewById(R.id.itemListView);
-        itemListView.setAdapter(itemArrayAdapter);
+        itemListView.setAdapter(itemListElementAdapter);
         FloatingActionButton newItemFAB = findViewById(R.id.addItemFloatingActionButton);
-        ImageView emptyImageView = findViewById(R.id.emptyImageView);
-
+        GifImageView emptyImageView = findViewById(R.id.emptyImageView);
         emptyImageView.setVisibility(View.GONE);
 
-       if(itemArrayList.size()<0)
+       if(itemArrayList.size()<=0)
         {
             itemListView.setVisibility(View.GONE);
             emptyImageView.setVisibility(View.VISIBLE);
-            emptyImageView.setImageResource(R.drawable.ic_baseline_empty);
+
         }
         else
         {
@@ -52,7 +52,8 @@ public class CategoryInformation extends AppCompatActivity {
         newItemFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(CategoryInformation.this, "Creating new item", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getApplicationContext(),AddNewItem.class);
+                startActivity(intent);
             }
         });
 

@@ -21,11 +21,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".AddCategory"
-            android:label="Add Category"
-            android:parentActivityName=".MainActivity" />
         <activity android:name=".MainActivity" />
+        <activity android:name=".AddNewItem" />
     </application>
 
 </manifest>

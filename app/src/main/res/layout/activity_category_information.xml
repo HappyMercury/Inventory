@@ -21,9 +21,11 @@
         android:layout_marginRight="8dp"
         android:id="@+id/addItemFloatingActionButton"/>
 
-    <ImageView
+    <pl.droidsonroids.gif.GifImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/emptyImageView"/>
+        android:id="@+id/emptyImageView"
+        android:src="@raw/empty_folder"
+        android:alpha="0.6"/>
 
 </RelativeLayout>

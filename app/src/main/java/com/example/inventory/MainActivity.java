@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -37,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
 
@@ -71,6 +73,42 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @SuppressLint("RestrictedApi")
+    @Override
+    public boolean onCreateOptionsMenu (Menu menu){
+        super.onCreateOptionsMenu(menu);
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.appbar_menu, menu);
+
+        if (menu instanceof MenuBuilder) {
+
+            MenuBuilder menuBuilder = (MenuBuilder) menu;
+            menuBuilder.setOptionalIconsVisible(true);
+            menuBuilder.setGroupDividerEnabled(true);
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected (@NonNull MenuItem item){
+
+        switch (item.getItemId()) {
+            case R.id.logout:
+                logout();
+                break;
+            case R.id.help:
+                //help
+                break;
+            case R.id.share:
+                Toast.makeText(this, "Share", Toast.LENGTH_SHORT).show();
+                break;
+            default:
+                super.onOptionsItemSelected(item);
+        }
+        return true;
+    }
+
         public void logout () {
             FirebaseAuth.getInstance().signOut();
             GoogleSignIn.getClient(this, new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build())
@@ -87,37 +125,7 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
-        @SuppressLint("RestrictedApi")
-        @Override
-        public boolean onCreateOptionsMenu (Menu menu){
-            super.onCreateOptionsMenu(menu);
-            MenuInflater menuInflater = getMenuInflater();
-            menuInflater.inflate(R.menu.appbar_menu, menu);
 
-            if (menu instanceof MenuBuilder) {
-
-                MenuBuilder menuBuilder = (MenuBuilder) menu;
-                menuBuilder.setOptionalIconsVisible(true);
-            }
-
-            return true;
-        }
-
-        @Override
-        public boolean onOptionsItemSelected (@NonNull MenuItem item){
-
-            switch (item.getItemId()) {
-                case R.id.logout:
-                    logout();
-                    break;
-                case R.id.help:
-                    Toast.makeText(this, "You Clicked Help", Toast.LENGTH_SHORT).show();
-                    break;
-                default:
-                    super.onOptionsItemSelected(item);
-            }
-            return true;
-        }
 
         public void showFragment(int fragment)
         {
@@ -126,21 +134,18 @@ public class MainActivity extends AppCompatActivity {
 
             switch (i) {
                 case FRAGMENT_DASHBOARD:
-                    Toast.makeText(MainActivity.this, "Dashboard", Toast.LENGTH_SHORT).show();
                     DashboardFragment dashboardFragment = new DashboardFragment();
                     fragmentTransaction.replace(R.id.fragment_display, dashboardFragment).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                     fragmentTransaction.addToBackStack("dashboard");
                     fragmentTransaction.commit();
                     break;
                 case FRAGMENT_SETTINGS:
-                    Toast.makeText(MainActivity.this, "Settings", Toast.LENGTH_SHORT).show();
                     SettingsFragment settingsFragment = new SettingsFragment();
                     fragmentTransaction.replace(R.id.fragment_display, settingsFragment).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                     fragmentTransaction.addToBackStack("settings");
                     fragmentTransaction.commit();
                     break;
                 case FRAGMENT_TODOLIST:
-                    Toast.makeText(MainActivity.this, "TO-DO List", Toast.LENGTH_SHORT).show();
                     ToDoListFragment toDoListFragment = new ToDoListFragment();
                     fragmentTransaction.replace(R.id.fragment_display, toDoListFragment).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                     fragmentTransaction.addToBackStack("to-do list");
@@ -167,7 +172,6 @@ public class MainActivity extends AppCompatActivity {
             switch (i) {
                 case FRAGMENT_DASHBOARD:
                     item.setChecked(true);
-                    Toast.makeText(MainActivity.this, "Dashboard", Toast.LENGTH_SHORT).show();
                     DashboardFragment dashboardFragment = new DashboardFragment();
                     fragmentTransaction.replace(R.id.fragment_display, dashboardFragment).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                     fragmentTransaction.addToBackStack("dashboard");
@@ -175,7 +179,6 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case FRAGMENT_SETTINGS:
                     item.setChecked(true);
-                    Toast.makeText(MainActivity.this, "Settings", Toast.LENGTH_SHORT).show();
                     SettingsFragment settingsFragment = new SettingsFragment();
                     fragmentTransaction.replace(R.id.fragment_display, settingsFragment).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                     fragmentTransaction.addToBackStack("settings");
@@ -183,7 +186,6 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case FRAGMENT_TODOLIST:
                     item.setChecked(true);
-                    Toast.makeText(MainActivity.this, "TO-DO List", Toast.LENGTH_SHORT).show();
                     ToDoListFragment toDoListFragment = new ToDoListFragment();
                     fragmentTransaction.replace(R.id.fragment_display, toDoListFragment).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                     fragmentTransaction.addToBackStack("to-do list");
@@ -194,5 +196,6 @@ public class MainActivity extends AppCompatActivity {
                     break;
             }
         }
+
 
 }

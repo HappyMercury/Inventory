@@ -3,4 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 <item android:id="@+id/logout" android:title="Logout" android:icon="@drawable/ic_baseline_logout_24" android:iconTint="@color/black" app:showAsAction="never"/>
     <item android:id="@+id/help" android:title="Help" android:icon="@drawable/ic_baseline_help_outline_24" android:iconTint="@color/black" app:showAsAction="never" />
+    <item
+        android:id="@+id/share"
+        android:icon="@drawable/ic_baseline_share_24"
+        android:title="Share"
+        android:contentDescription="share"
+        android:iconTint="@color/white"
+        app:showAsAction="ifRoom" />
 </menu>

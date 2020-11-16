@@ -32,16 +32,13 @@
                 android:elevation="@dimen/cardview_default_elevation"
                 android:src="@raw/trial_image" />
 
-
-
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/profileImageView"
                 android:id="@+id/usernameTextInputLayout"
                 android:layout_margin="8dp"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                >
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"

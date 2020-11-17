@@ -7,6 +7,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -21,12 +23,18 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 public class LoginActivity extends AppCompatActivity {
 
     public static final int GOOGLE_SIGN_IN_CODE = 42069;
     SignInButton signIn;
+    EditText email;
+    EditText password;
+    Button Loginbtn;
+    Button Signupbutton;
     GoogleSignInOptions gso;
     GoogleSignInClient signInClient;
     FirebaseAuth firebaseAuth;
@@ -36,6 +44,10 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login2);
         signIn = findViewById(R.id.signIn);
+        Loginbtn = findViewById(R.id.buttonLogin);
+        Signupbutton = findViewById(R.id.buttonSignUp);
+        email = findViewById(R.id.editTxtEmail);
+        password = findViewById(R.id.editTxtPassword);
 
         firebaseAuth = FirebaseAuth.getInstance();
 
@@ -49,7 +61,8 @@ public class LoginActivity extends AppCompatActivity {
         signInClient = GoogleSignIn.getClient(this,gso);
 
         GoogleSignInAccount signInAccount = GoogleSignIn.getLastSignedInAccount(this);
-        if(signInAccount != null || firebaseAuth.getCurrentUser() != null){
+        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+        if(signInAccount != null ||( firebaseAuth.getCurrentUser() != null&&firebaseUser.isEmailVerified())){
             Toast.makeText(this, "User is already logged in", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(this,MainActivity.class);
             intent.putExtra("FragmentToStart",MainActivity.FRAGMENT_DASHBOARD);
@@ -65,6 +78,44 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+
+        Signupbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(LoginActivity.this,RegisterActivity.class));
+                //finish();
+            }
+        });
+
+
+        Loginbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String emailval = email.getText().toString();
+                String passwordval = password.getText().toString();
+
+                firebaseAuth.signInWithEmailAndPassword(emailval, passwordval).addOnCompleteListener(
+                        new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful()) {
+                                    if(firebaseAuth.getCurrentUser().isEmailVerified()){
+                                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                                        finish();
+                                    }
+                                    else{
+                                        Toast.makeText(LoginActivity.this, "Please verify email address", Toast.LENGTH_SHORT).show();
+                                    }
+//                                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+//                                    finish();
+                                } else {
+                                    Toast.makeText(LoginActivity.this, "Login Failed", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }
+                );
+            }
+        });
         //Intent intent = new Intent(getApplicationContext(),MainActivity.class);
         //startActivity(intent);
 
@@ -85,6 +136,20 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         Toast.makeText(getApplicationContext(), "Your account is now connected", Toast.LENGTH_SHORT).show();
+                        FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
+                        mUser.getIdToken(true)
+                                .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
+                                    public void onComplete(@NonNull Task<GetTokenResult> task) {
+                                        if (task.isSuccessful()) {
+                                            String idToken = task.getResult().getToken();
+                                            //System.out.println(idToken);
+                                            // Send token to your backend via HTTPS
+                                            // ...
+                                        } else {
+                                            // Handle error -> task.getException();
+                                        }
+                                    }
+                                });
                         startActivity(new Intent(getApplicationContext(),MainActivity.class));
                     }
                 }).addOnFailureListener(new OnFailureListener() {

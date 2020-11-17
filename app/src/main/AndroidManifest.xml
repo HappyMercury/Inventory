@@ -10,7 +10,8 @@
         android:roundIcon="@raw/inventory"
         android:supportsRtl="true"
         android:theme="@style/Theme.Inventory">
-        <activity android:name=".NewToDoListItem"></activity>
+        <activity android:name=".RegisterActivity"></activity>
+        <activity android:name=".NewToDoListItem" />
         <activity
             android:name=".CategoryInformation"
             android:parentActivityName=".MainActivity" />

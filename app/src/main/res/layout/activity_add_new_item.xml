@@ -88,7 +88,7 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:id="@+id/decrement"
-                    android:src="@drawable/ic_baseline_minus_24"
+                    android:src="@drawable/ic_baseline_add_24"
                     android:background="@color/purple_500"
                     android:layout_gravity="center_vertical"/>
 

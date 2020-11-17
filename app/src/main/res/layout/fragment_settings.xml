@@ -36,16 +36,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/profileImageView"
-                android:id="@+id/usernameTextInputLayout"
+                android:id="@+id/nameTextInputLayout"
                 android:layout_margin="8dp"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="harshgup01"
-                    android:hint="Username"
+                    android:hint="Name"
                     android:focusedByDefault="true"
+                    android:id="@+id/nameTextInputEditText"
                     android:editable="false"/>
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -53,7 +53,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/usernameTextInputLayout"
+                android:layout_below="@id/nameTextInputLayout"
                 android:id="@+id/emailTextInputLayout"
                 android:layout_margin="8dp"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
@@ -61,9 +61,10 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="harshgup01@gmail.com"
+
                     android:hint="Email ID"
                     android:focusedByDefault="true"
+                    android:id="@+id/emailTextInputEditText"
                     android:editable="false"/>
 
             </com.google.android.material.textfield.TextInputLayout>

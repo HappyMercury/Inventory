@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -30,6 +31,10 @@ public class LoginActivity extends AppCompatActivity {
     GoogleSignInOptions gso;
     GoogleSignInClient signInClient;
     FirebaseAuth firebaseAuth;
+    public static Uri photoURL;
+    public static String name;
+    public static String email;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +55,9 @@ public class LoginActivity extends AppCompatActivity {
 
         GoogleSignInAccount signInAccount = GoogleSignIn.getLastSignedInAccount(this);
         if(signInAccount != null || firebaseAuth.getCurrentUser() != null){
+            name = firebaseAuth.getCurrentUser().getDisplayName();
+            email = firebaseAuth.getCurrentUser().getEmail();
+            photoURL = firebaseAuth.getInstance().getCurrentUser().getPhotoUrl();
             Toast.makeText(this, "User is already logged in", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(this,MainActivity.class);
             intent.putExtra("FragmentToStart",MainActivity.FRAGMENT_DASHBOARD);
@@ -84,6 +92,9 @@ public class LoginActivity extends AppCompatActivity {
                 firebaseAuth.signInWithCredential(authCredential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
+                        name = firebaseAuth.getCurrentUser().getDisplayName();
+                        email = firebaseAuth.getCurrentUser().getEmail();
+                        photoURL = firebaseAuth.getInstance().getCurrentUser().getPhotoUrl();
                         Toast.makeText(getApplicationContext(), "Your account is now connected", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(getApplicationContext(),MainActivity.class));
                     }
@@ -93,6 +104,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     }
                 });
+
 
 
             } catch (ApiException e) {

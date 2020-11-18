@@ -48,8 +48,7 @@ public class LoginActivity extends AppCompatActivity {
                 .requestIdToken("922890224357-alaqa3sorbb0ck649g510u9fp7umnjoe.apps.googleusercontent.com")
                 .requestEmail()
                 .build();
-        //922890224357-alaqa3sorbb0ck649g510u9fp7umnjoe.apps.googleusercontent.com
-        //698187653861-g54mfttbqmvhbspc2742uum5fhjcitif.apps.googleusercontent.com
+
 
         signInClient = GoogleSignIn.getClient(this,gso);
 

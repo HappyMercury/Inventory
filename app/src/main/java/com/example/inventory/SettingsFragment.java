@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.GlideBuilder;
 import com.bumptech.glide.request.target.Target;
+import com.google.android.material.textfield.TextInputEditText;
 
 public class SettingsFragment extends Fragment {
 
@@ -51,10 +52,14 @@ public class SettingsFragment extends Fragment {
         //Uri profileImageURL = LoginActivity.signInAccount.getPhotoUrl();
         //Log.i("url",profileImageURL.toString());
         View rootView = inflater.inflate(R.layout.fragment_settings, container, false);
+        TextInputEditText name = rootView.findViewById(R.id.nameTextInputEditText);
+        TextInputEditText email = rootView.findViewById(R.id.emailTextInputEditText);
+        name.setText(LoginActivity.googleName);
+        email.setText(LoginActivity.googleEmail);
         ImageView profileImageView = rootView.findViewById(R.id.profileImageView);
         try {
             Glide.with(this)
-                    .load("https://image.tmdb.org/t/p/w92/dRLSoufWtc16F5fliK4ECIVs56p.jpg")
+                    .load(LoginActivity.googlePhotoURL)
                     .circleCrop()
                     .into(profileImageView);
         }

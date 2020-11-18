@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -30,6 +31,9 @@ import com.google.firebase.auth.GoogleAuthProvider;
 public class LoginActivity extends AppCompatActivity {
 
     public static final int GOOGLE_SIGN_IN_CODE = 42069;
+    public static String googleEmail,googleName;
+    public static Uri googlePhotoURL;
+
     SignInButton signIn;
     EditText email;
     EditText password;
@@ -63,6 +67,9 @@ public class LoginActivity extends AppCompatActivity {
         GoogleSignInAccount signInAccount = GoogleSignIn.getLastSignedInAccount(this);
         FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
         if(signInAccount != null ||( firebaseAuth.getCurrentUser() != null&&firebaseUser.isEmailVerified())){
+            googleName = firebaseUser.getDisplayName();
+            googleEmail = firebaseUser.getEmail();
+            googlePhotoURL = firebaseUser.getPhotoUrl();
             Toast.makeText(this, "User is already logged in", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(this,MainActivity.class);
             intent.putExtra("FragmentToStart",MainActivity.FRAGMENT_DASHBOARD);
@@ -100,6 +107,7 @@ public class LoginActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
                                     if(firebaseAuth.getCurrentUser().isEmailVerified()){
+
                                         startActivity(new Intent(LoginActivity.this, MainActivity.class));
                                         finish();
                                     }
@@ -150,6 +158,9 @@ public class LoginActivity extends AppCompatActivity {
                                         }
                                     }
                                 });
+                        googleName = mUser.getDisplayName();
+                        googleEmail = mUser.getEmail();
+                        googlePhotoURL = mUser.getPhotoUrl();
                         startActivity(new Intent(getApplicationContext(),MainActivity.class));
                     }
                 }).addOnFailureListener(new OnFailureListener() {

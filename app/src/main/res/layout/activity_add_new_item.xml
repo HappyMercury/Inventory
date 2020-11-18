@@ -70,7 +70,7 @@
                     android:layout_height="50dp"
                     android:id="@+id/increment"
                     android:elevation="@dimen/cardview_default_radius"
-                    android:src="@drawable/ic_baseline_add_24"
+                    android:src="@drawable/ic_baseline_minus_24"
                     android:background="@color/purple_500"
                     android:layout_gravity="center_vertical"/>
 

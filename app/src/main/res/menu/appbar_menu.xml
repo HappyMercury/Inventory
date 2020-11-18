@@ -5,7 +5,7 @@
     <item android:id="@+id/help" android:title="Help" android:icon="@drawable/ic_baseline_help_outline_24" android:iconTint="@color/black" app:showAsAction="never" />
     <item
         android:id="@+id/share"
-        android:icon="@drawable/ic_baseline_add_24"
+        android:icon="@drawable/ic_baseline_share_24"
         android:title="Share"
         android:contentDescription="share"
         android:iconTint="@color/white"

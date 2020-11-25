@@ -44,7 +44,8 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Item Name"/>
+                        android:hint="Item Name"
+                        android:id="@+id/itemNameTextInputEditText"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -68,7 +69,7 @@
                 <androidx.appcompat.widget.AppCompatImageButton
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:id="@+id/increment"
+                    android:id="@+id/decrement"
                     android:elevation="@dimen/cardview_default_radius"
                     android:src="@drawable/ic_baseline_minus_24"
                     android:background="@color/purple_500"
@@ -87,7 +88,7 @@
                 <androidx.appcompat.widget.AppCompatImageButton
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:id="@+id/decrement"
+                    android:id="@+id/increment"
                     android:src="@drawable/ic_baseline_add_24"
                     android:background="@color/purple_500"
                     android:layout_gravity="center_vertical"/>

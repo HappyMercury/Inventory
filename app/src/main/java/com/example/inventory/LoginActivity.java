@@ -4,7 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -33,6 +35,7 @@ public class LoginActivity extends AppCompatActivity {
     public static final int GOOGLE_SIGN_IN_CODE = 42069;
     public static String googleEmail,googleName;
     public static Uri googlePhotoURL;
+    public static SharedPreferences prefs;
 
     SignInButton signIn;
     EditText email;
@@ -42,6 +45,7 @@ public class LoginActivity extends AppCompatActivity {
     GoogleSignInOptions gso;
     GoogleSignInClient signInClient;
     FirebaseAuth firebaseAuth;
+    static String idToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +56,10 @@ public class LoginActivity extends AppCompatActivity {
         Signupbutton = findViewById(R.id.buttonSignUp);
         email = findViewById(R.id.editTxtEmail);
         password = findViewById(R.id.editTxtPassword);
+
+        prefs = this.getSharedPreferences("com.example.nec.myapplication", Context.MODE_PRIVATE);
+
+
 
         firebaseAuth = FirebaseAuth.getInstance();
 
@@ -124,8 +132,7 @@ public class LoginActivity extends AppCompatActivity {
                 );
             }
         });
-        //Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-        //startActivity(intent);
+
 
     }
 
@@ -149,8 +156,9 @@ public class LoginActivity extends AppCompatActivity {
                                 .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
                                     public void onComplete(@NonNull Task<GetTokenResult> task) {
                                         if (task.isSuccessful()) {
-                                            String idToken = task.getResult().getToken();
-                                            //System.out.println(idToken);
+                                            idToken = task.getResult().getToken();
+                                            System.out.println("Token: "+idToken);
+                                            prefs.edit().putString("idToken", idToken).apply();
                                             // Send token to your backend via HTTPS
                                             // ...
                                         } else {

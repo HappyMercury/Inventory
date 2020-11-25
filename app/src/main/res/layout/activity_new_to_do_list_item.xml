@@ -19,6 +19,8 @@
         android:outlineAmbientShadowColor="@color/design_default_color_primary_variant"
         android:id="@+id/cardView">
 
+
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -35,15 +37,33 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Title"
-                android:id="@+id/toDoListTitleTextInput"/>
+                android:id="@+id/toDoListTitleTextInput" />
+
 
         </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:theme="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:id="@+id/toDoListDescriptionTextInputLayout"
+                android:layout_below="@id/toDoListTitleTextInputLayout"
+                android:layout_marginTop="10dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Description"
+                    android:id="@+id/toDoListDescriptionTextInput" />
+
+
+            </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Set reminder time:"
-                android:layout_below="@id/toDoListTitleTextInputLayout"
+                android:layout_below="@id/toDoListDescriptionTextInputLayout"
                 android:id="@+id/reminderHeader"
                 android:layout_marginTop="30dp"
                 android:textStyle="bold"

@@ -34,6 +34,7 @@ class ToDoListAdapter extends ArrayAdapter<ToDoListElement> {
         toDoListTextView.setText(currentItem.getToDoListTextView());
 
         CheckBox toDoListCheckBox = mToDoListItem.findViewById(R.id.toDoListCheckBox);
+        toDoListCheckBox.setFocusable(false);
 
         ImageView reminderImageView = mToDoListItem.findViewById(R.id.reminderImageView);
         if(currentItem.getReminderImageView())

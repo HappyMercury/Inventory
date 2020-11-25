@@ -16,9 +16,12 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
+import okhttp3.OkHttpClient;
 import pl.droidsonroids.gif.GifImageView;
 
 public class CategoryInformation extends AppCompatActivity {
+
+
 
     @SuppressLint("ResourceType")
     @Override
@@ -26,9 +29,11 @@ public class CategoryInformation extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category_information);
 
+        //when started from category name to get category name info
+
         ArrayList<ItemListElement> itemArrayList = new ArrayList<ItemListElement>();
-        itemArrayList.add(new ItemListElement("Papita",true));
-        itemArrayList.add(new ItemListElement("Banana",false));
+//        itemArrayList.add(new ItemListElement("Papita",true));
+//        itemArrayList.add(new ItemListElement("Banana",false));
 
         ItemListElementAdapter itemListElementAdapter = new ItemListElementAdapter(this,0,itemArrayList);
 

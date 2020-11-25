@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,8 +15,12 @@ import androidx.annotation.Nullable;
 import java.util.ArrayList;
 
 public class ItemListElementAdapter extends ArrayAdapter<ItemListElement> {
+
+    ArrayList<ItemListElement> list;
+
     public ItemListElementAdapter(@NonNull Context context, int resource,ArrayList<ItemListElement> list) {
         super(context, resource,list);
+        this.list = list;
     }
 
     @NonNull
@@ -34,6 +39,9 @@ public class ItemListElementAdapter extends ArrayAdapter<ItemListElement> {
         ImageView itemListElementErrorImageView = mItemListElement.findViewById(R.id.itemListElementErrorImageView);
         itemListElementErrorImageView.setVisibility((currentItem.getError()?View.VISIBLE:View.GONE));
 
+
         return mItemListElement;
     }
+
+
 }

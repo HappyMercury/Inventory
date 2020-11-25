@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
 
@@ -78,12 +79,15 @@ public class DashboardFragment extends Fragment {
                 View alertDialogLayout = getLayoutInflater().inflate(R.layout.add_category_alertdialog,null);
                 addCategoryAlertDialogBuilder.setView(alertDialogLayout);
 
+                TextInputEditText categoryNameEditText = alertDialogLayout.findViewById(R.id.categoryNameEditText);
+
                 addCategoryAlertDialogBuilder.setCancelable(true)
                         .setPositiveButton("CREATE", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 Toast.makeText(getActivity().getBaseContext(), "Category Created", Toast.LENGTH_SHORT).show();
-                                Intent addCategoryIntent = new Intent(getActivity().getApplicationContext(),CategoryInformation.class);
+                                Intent addCategoryIntent = new Intent(getActivity().getApplicationContext(),AddNewItem.class);
+                                addCategoryIntent.putExtra("category name",categoryNameEditText.getText().toString());
                                 startActivity(addCategoryIntent);
                             }
                         });
@@ -102,4 +106,5 @@ public class DashboardFragment extends Fragment {
         });
         return rootView;
     }
+
 }

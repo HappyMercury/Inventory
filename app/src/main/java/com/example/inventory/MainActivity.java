@@ -48,9 +48,6 @@ public class MainActivity extends AppCompatActivity {
     public static final int FRAGMENT_SETTINGS = 3;
     int i = 0;
     int itemID = 0;
-    public static HashMap<String,ArrayList<String>> itemNameMap;
-    public static HashMap<String,ArrayList<Integer>> itemQuantityMap;
-    public static HashMap<String,ArrayList<String>> itemIDMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

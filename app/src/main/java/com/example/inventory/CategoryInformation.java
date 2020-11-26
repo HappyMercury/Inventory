@@ -29,6 +29,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import okhttp3.OkHttpClient;
@@ -38,10 +39,11 @@ public class CategoryInformation extends AppCompatActivity {
 
     RequestQueue requestQueue;
     String categoryName;
-    ArrayList<String> itemNamesList;
-    ArrayList<Integer> itemQuantity;
-    ArrayList<String> itemId;
+    ArrayList<String> itemNamesList = new ArrayList<>();
+    ArrayList<Integer> itemQuantityList = new ArrayList<>();
+    ArrayList<String> itemIdList = new ArrayList<>();
     Intent intent;
+
 
     @SuppressLint("ResourceType")
     @Override
@@ -49,41 +51,90 @@ public class CategoryInformation extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category_information);
 
-        requestQueue = Volley.newRequestQueue(this);
-        //when started from category name to get category name info
+        GifImageView emptyImageView = findViewById(R.id.emptyImageView);
+        emptyImageView.setVisibility(View.GONE);
+
+        ArrayList<ItemListElement> itemArrayList = new ArrayList<ItemListElement>();
+        ItemListElementAdapter itemListElementAdapter = new ItemListElementAdapter(CategoryInformation.this,0,itemArrayList);
+
+        ListView itemListView = findViewById(R.id.itemListView);
+        itemListView.setAdapter(itemListElementAdapter);
 
         intent = getIntent();
         String categoryName = intent.getStringExtra("category name");
-        ArrayList<String> itemNamesList = intent.getStringArrayListExtra("item name list added/updated");
-        ArrayList<Integer> itemQuantity = intent.getIntegerArrayListExtra("item quantity list added/updated");
-        ArrayList<String> itemId = intent.getStringArrayListExtra("item id list added/updated");
+
+        //for getting information about the category
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, ApiEndpoints.inventoryEndpoint, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try
+                {
+                    for(int i=0;i<response.getJSONArray("data").length();i++) {
+                        System.out.println("Value of i: " + i);
+                        if (response.getJSONArray("data").getJSONObject(i).getString("category").equals(categoryName)) {
+                            for (int j = 0; j < response.getJSONArray("data").getJSONObject(i).getJSONArray("items").length(); j++) {
+                                itemNamesList.add(response.getJSONArray("data").getJSONObject(i).getJSONArray("items").getJSONObject(j).getString("name"));
+                                itemQuantityList.add(response.getJSONArray("data").getJSONObject(i).getJSONArray("items").getJSONObject(j).getInt("quantity"));
+                                itemIdList.add(response.getJSONArray("data").getJSONObject(i).getJSONArray("items").getJSONObject(j).getString("_id"));
+                            }
+                        }
+                    }
+
+                    System.out.println("Size hai bhiay size: "+itemNamesList.size());
+
+                    for(int i=0;i<itemNamesList.size();i++)
+                    {
+                        itemArrayList.add(new ItemListElement(itemNamesList.get(i),itemQuantityList.get(i)<=2?true:false));
+                    }
+
+                }
+                catch (JSONException e)
+                {
+                    e.printStackTrace();
+                }
+
+                itemListElementAdapter.notifyDataSetChanged();
+                itemListView.setAdapter(itemListElementAdapter);
+                System.out.println("Size hai bhiay size: "+itemArrayList.size());
+                if(itemArrayList.size()>0)
+                {
+                    itemListView.setVisibility(View.VISIBLE);
+                    emptyImageView.setVisibility(View.GONE);
+                }
+
+
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(CategoryInformation.this, "Category Name error", Toast.LENGTH_SHORT).show();
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                // String idToken = LoginActivity.prefs.getString("idToken", "");
+                headers.put("authorization", "bearer " + LoginActivity.prefs.getString("idToken", "0"));
+                return headers;
+            }
+        };
+        Volley.newRequestQueue(this).add(request);
+
+        //when started from category name to get category name info
 
         System.out.println(itemNamesList.size());
 
-        ArrayList<ItemListElement> itemArrayList = new ArrayList<ItemListElement>();
-//        itemArrayList.add(new ItemListElement("Papita",true));
-//        itemArrayList.add(new ItemListElement("Banana",false));
-        for(int i=0;i<itemNamesList.size();i++)
-        {
-            itemArrayList.add(new ItemListElement(itemNamesList.get(i),itemQuantity.get(i)<=2?true:false));
-        }
-
-        ItemListElementAdapter itemListElementAdapter = new ItemListElementAdapter(this,0,itemArrayList);
-
-        ListView itemListView = findViewById(R.id.itemListView);
 
         itemListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getApplicationContext(),AddNewItem.class);
                 intent.putExtra("action","update");
-//                intent.putExtra("item name",itemNamesList.get(position));
-//                intent.putExtra("item id",itemId.get(position));
-//                intent.putExtra("item quantity",itemQuantity.get(position));
+                intent.putExtra("item name",itemNamesList.get(position));
+                intent.putExtra("item id",itemIdList.get(position));
+                intent.putExtra("item quantity",itemQuantityList.get(position));
                 intent.putExtra("category name",categoryName);
-                intent.putStringArrayListExtra("item name list",itemNamesList);
-                intent.putIntegerArrayListExtra("item quantity list",itemQuantity);
-                intent.putStringArrayListExtra("item id list",itemId);
                 intent.putExtra("position",position);
                 startActivity(intent);
             }
@@ -98,7 +149,7 @@ public class CategoryInformation extends AppCompatActivity {
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                deletionRequest(itemId.get(position));
+                                deletionRequest(itemIdList.get(position));
                                 itemArrayList.remove(position);
                                 itemListElementAdapter.notifyDataSetChanged();
                                 //add code for deletion here
@@ -117,11 +168,7 @@ public class CategoryInformation extends AppCompatActivity {
             }
         });
 
-        itemListView.setAdapter(itemListElementAdapter);
-
         FloatingActionButton newItemFAB = findViewById(R.id.addItemFloatingActionButton);
-        GifImageView emptyImageView = findViewById(R.id.emptyImageView);
-        emptyImageView.setVisibility(View.GONE);
 
        if(itemArrayList.size()<=0)
         {
@@ -140,11 +187,6 @@ public class CategoryInformation extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(),AddNewItem.class);
                 intent.putExtra("action","new");
                 intent.putExtra("category name",categoryName);
-                intent.putStringArrayListExtra("item names",itemNamesList);
-                intent.putIntegerArrayListExtra("item quantity",itemQuantity);
-                intent.putStringArrayListExtra("item name list",itemNamesList);
-                intent.putIntegerArrayListExtra("item quantity list",itemQuantity);
-                intent.putStringArrayListExtra("item id list",itemId);
                 startActivity(intent);
             }
         });
@@ -186,13 +228,4 @@ public class CategoryInformation extends AppCompatActivity {
         queue.add(request);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        intent = getIntent();
-        categoryName = intent.getStringExtra("category name");
-        itemNamesList = intent.getStringArrayListExtra("item name list added/updated");
-        itemQuantity = intent.getIntegerArrayListExtra("item quantity list added/updated");
-        itemId = intent.getStringArrayListExtra("item id list added/updated");
-    }
 }

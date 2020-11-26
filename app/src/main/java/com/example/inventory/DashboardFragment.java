@@ -101,9 +101,6 @@ public class DashboardFragment extends Fragment {
                                 itemQuantity.add(response.getJSONArray("data").getJSONObject(i).getJSONArray("items").getJSONObject(j).getInt("quantity"));
                                 itemID.add(response.getJSONArray("data").getJSONObject(i).getJSONArray("items").getJSONObject(j).getString("_id"));
                             }
-                            MainActivity.itemNameMap.put(response.getJSONArray("data").getJSONObject(i).getString("category"),itemNames);
-                        MainActivity.itemQuantityMap.put(response.getJSONArray("data").getJSONObject(i).getString("category"),itemQuantity);
-                        MainActivity.itemIDMap.put(response.getJSONArray("data").getJSONObject(i).getString("category"),itemID);
                             itemNameList.put(response.getJSONArray("data").getJSONObject(i).getString("category"), itemNames);
                             itemQuantityList.put(response.getJSONArray("data").getJSONObject(i).getString("category"), itemQuantity);
                             itemIDList.put(response.getJSONArray("data").getJSONObject(i).getString("category"), itemID);
@@ -157,9 +154,6 @@ public class DashboardFragment extends Fragment {
                                 Intent addCategoryIntent = new Intent(getActivity().getApplicationContext(),AddNewItem.class);
                                 addCategoryIntent.putExtra("category name",categoryNameEditText.getText().toString());
                                 addCategoryIntent.putExtra("action","new");
-                                addCategoryIntent.putStringArrayListExtra("item name list",new ArrayList<String>());
-                                addCategoryIntent.putIntegerArrayListExtra("item quantity list",new ArrayList<Integer>());
-                                addCategoryIntent.putStringArrayListExtra("item id list",new ArrayList<String>());
                                 startActivity(addCategoryIntent);
                             }
                         });
@@ -174,9 +168,6 @@ public class DashboardFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getActivity(),CategoryInformation.class);
                 intent.putExtra("category name",categoryNameList.get(position));
-                intent.putStringArrayListExtra("item name list added/updated",MainActivity.itemNameMap.get(categoryNameList.get(position)));
-                intent.putIntegerArrayListExtra("item quantity list added/updated",MainActivity.itemQuantityMap.get(categoryNameList.get(position)));
-                intent.putStringArrayListExtra("item id list added/updated",MainActivity.itemIDMap.get(categoryNameList.get(position)));
                 startActivity(intent);
             }
         });

@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
                 switch(i)
                 {
                     case FRAGMENT_DASHBOARD:
-                        message = "Dashboard";
+                        message = dashboardFragment.getMessage();
                         break;
                     case FRAGMENT_SETTINGS:
                         Fragment settingsFragment = new SettingsFragment();

@@ -27,6 +27,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -183,7 +184,14 @@ public class DashboardFragment extends Fragment {
         String message="";
         for(int i=0;i<categoryNameList.size();i++)
         {
-            message += Integer.toString(i+1)+")";
+            message += Integer.toString(i+1)+") Category: "+categoryNameList.get(i);
+            ArrayList<String> itemNames = itemNameList.get(categoryNameList.get(i));
+            ArrayList<Integer> itemQuantities = itemQuantityList.get(categoryNameList.get(i));
+            for(int j=0;j<itemNameList.get(categoryNameList.get(i)).size();j++)
+            {
+                message+="\n"+Integer.toString(j+1)+") "+itemNames.get(j)+" : "+itemQuantities.get(j);
+            }
+            message+="\n\n**************************\n\n";
         }
             return message;
     }

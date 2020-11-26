@@ -75,15 +75,13 @@
                 android:layout_below="@id/reminderHeader"
                 android:id="@+id/toDoListToggleButton"
                 android:layout_marginTop="10dp"
-                android:layout_centerHorizontal="true"
-                android:checked="false"/>
+                android:layout_centerHorizontal="true" />
 
             <DatePicker
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/toDoListToggleButton"
                 android:id="@+id/toDoListDatePicker"
-                android:visibility="gone"
                 android:layout_marginTop="10dp"/>
 
             <TimePicker
@@ -91,8 +89,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/reminderClock"
                 android:layout_below="@id/toDoListDatePicker"
-                android:layout_marginTop="30dp"
-                android:visibility="gone"/>
+                android:layout_marginTop="30dp"/>
 
             <Button
                 android:layout_width="wrap_content"

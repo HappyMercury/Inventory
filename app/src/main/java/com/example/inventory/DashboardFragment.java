@@ -178,5 +178,15 @@ public class DashboardFragment extends Fragment {
     }
 
 
+    public String getMessage()
+    {
+        String message="";
+        for(int i=0;i<categoryNameList.size();i++)
+        {
+            message += Integer.toString(i+1)+")";
+        }
+            return message;
+    }
+
 
 }

@@ -8,8 +8,8 @@
 
     <EditText
         android:id="@+id/editTextEmail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="285dp"
+        android:layout_height="44dp"
         android:layout_marginTop="100dp"
         android:ems="10"
         android:hint="E-mail"
@@ -18,15 +18,26 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <Button
+        android:id="@+id/SignUpBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:text="Signup"
+        app:layout_constraintEnd_toEndOf="@+id/editTextEmail"
+        app:layout_constraintStart_toStartOf="@+id/editTextEmail"
+        app:layout_constraintTop_toBottomOf="@+id/editTxtConfirmPwd" />
+
     <EditText
         android:id="@+id/editTextPwd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="40dp"
         android:ems="10"
         android:hint="Password"
-        android:inputType="textPersonName"
+        android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="@+id/editTextEmail"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/editTextEmail"
         app:layout_constraintTop_toBottomOf="@+id/editTextEmail" />
 
@@ -37,18 +48,17 @@
         android:layout_marginTop="30dp"
         android:ems="10"
         android:hint="Confirm Password"
-        android:inputType="textPersonName"
+        android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="@+id/editTextPwd"
         app:layout_constraintStart_toStartOf="@+id/editTextPwd"
         app:layout_constraintTop_toBottomOf="@+id/editTextPwd" />
 
-    <Button
-        android:id="@+id/SignUpBtn"
+    <CheckBox
+        android:id="@+id/showPwd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:text="Signup"
-        app:layout_constraintEnd_toEndOf="@+id/editTxtConfirmPwd"
-        app:layout_constraintStart_toStartOf="@+id/editTxtConfirmPwd"
-        app:layout_constraintTop_toBottomOf="@+id/editTxtConfirmPwd" />
+        android:text="Show"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/editTextPwd"
+        app:layout_constraintTop_toTopOf="@+id/editTextPwd" />
 </androidx.constraintlayout.widget.ConstraintLayout>

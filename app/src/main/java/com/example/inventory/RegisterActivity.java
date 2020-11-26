@@ -5,8 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -23,6 +27,7 @@ public class RegisterActivity extends AppCompatActivity {
     EditText repwd;
     Button signup;
     FirebaseAuth firebaseAuth;
+    CheckBox showbtn;
 
 
     @Override
@@ -33,7 +38,26 @@ public class RegisterActivity extends AppCompatActivity {
         pwd = findViewById(R.id.editTextPwd);
         repwd = findViewById(R.id.editTxtConfirmPwd);
         signup = findViewById(R.id.SignUpBtn);
+        showbtn = findViewById(R.id.showPwd);
         firebaseAuth = FirebaseAuth.getInstance();
+
+
+        showbtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // checkbox status is checked.
+                if (isChecked) {
+                    //password is visible
+                    pwd.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                    repwd.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                } else {
+                    //password gets hided
+                    pwd.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                    repwd.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                }
+            }
+        });
+
 
         signup.setOnClickListener(new View.OnClickListener() {
             @Override

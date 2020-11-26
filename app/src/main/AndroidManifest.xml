@@ -12,7 +12,9 @@
         android:roundIcon="@raw/inventory"
         android:supportsRtl="true"
         android:theme="@style/Theme.Inventory">
-        <activity android:name=".RegisterActivity"></activity>
+        <activity android:name=".VerifyPhone"></activity>
+        <activity android:name=".LoginPhone" />
+        <activity android:name=".RegisterActivity" />
         <activity android:name=".NewToDoListItem" />
         <activity
             android:name=".CategoryInformation"

@@ -74,8 +74,6 @@ public class LoginActivity extends AppCompatActivity {
                 .requestIdToken("922890224357-alaqa3sorbb0ck649g510u9fp7umnjoe.apps.googleusercontent.com")
                 .requestEmail()
                 .build();
-        //922890224357-alaqa3sorbb0ck649g510u9fp7umnjoe.apps.googleusercontent.com
-        //698187653861-g54mfttbqmvhbspc2742uum5fhjcitif.apps.googleusercontent.com
 
         signInClient = GoogleSignIn.getClient(this,gso);
 
@@ -85,6 +83,23 @@ public class LoginActivity extends AppCompatActivity {
             googleName = firebaseUser.getDisplayName();
             googleEmail = firebaseUser.getEmail();
             googlePhotoURL = firebaseUser.getPhotoUrl();
+
+            LoginActivity.prefs.edit().remove("idToken").commit();
+            FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
+            mUser.getIdToken(true)
+                    .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
+                        public void onComplete(@NonNull Task<GetTokenResult> task) {
+                            if (task.isSuccessful()) {
+                                idToken = task.getResult().getToken();
+                                System.out.println("Token: "+idToken);
+                                prefs.edit().putString("idToken", idToken).apply();
+                                // Send token to your backend via HTTPS
+                                // ...
+                            } else {
+                                // Handle error -> task.getException();
+                            }
+                        }
+                    });
 
             Toast.makeText(this, "User is already logged in", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(this,MainActivity.class);
@@ -150,6 +165,7 @@ public class LoginActivity extends AppCompatActivity {
                                                 .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
                                                     public void onComplete(@NonNull Task<GetTokenResult> task) {
                                                         if (task.isSuccessful()) {
+                                                            LoginActivity.prefs.edit().remove("idToken").commit();
                                                             idToken = task.getResult().getToken();
                                                             System.out.println("Token: "+idToken);
                                                             prefs.edit().putString("idToken", idToken).apply();

@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ListView;
@@ -119,6 +120,7 @@ public class ToDoListFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(),NewToDoListItem.class);
+                intent.putExtra("action","new");
                 startActivity(intent);
             }
         });
@@ -144,7 +146,7 @@ public class ToDoListFragment extends Fragment {
                                 toDoListElementArrayList.add(new ToDoListElement(dataArray.getJSONObject(i).getString("title"), reminder));
                             }
                             toDoListArrayAdapter = new ToDoListAdapter(getContext(),0,toDoListElementArrayList);
-                            if(toDoListElementArrayList.size()>1) {
+                            if(toDoListElementArrayList.size()>=1) {
                                 toDoListListView.setVisibility(View.VISIBLE);
                                 emptyToDoListImageView.setVisibility(View.GONE);
                             }
@@ -184,7 +186,10 @@ public class ToDoListFragment extends Fragment {
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-
+                                deletionRequest(itemIdArrayList.get(position));
+                                toDoListElementArrayList.remove(position);
+                                toDoListArrayAdapter = new ToDoListAdapter(getContext(),0,toDoListElementArrayList);
+                                toDoListListView.setAdapter(toDoListArrayAdapter);
                                 //add code for deletion here
                             }
                         })
@@ -200,6 +205,18 @@ public class ToDoListFragment extends Fragment {
                 return true;
             }
         });
+
+        //settings item click listener
+        toDoListListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getContext(),AddNewItem.class);
+                intent.putExtra("action","update");
+                intent.putExtra("id",itemIdArrayList.get(position));
+                startActivity(intent);
+            }
+        });
+
         if(toDoListElementArrayList.size()<1)
         {
             toDoListListView.setVisibility(View.GONE);
@@ -216,6 +233,40 @@ public class ToDoListFragment extends Fragment {
         return rootView;
     }
 
+    void deletionRequest(String id)
+    {
+        JSONObject data = new JSONObject();
+        try {
+            data.put("_id",id);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, ApiEndpoints.toDoEndpoint+"/delete", data, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Toast.makeText(getContext(), "Item deleted", Toast.LENGTH_SHORT).show();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        })
+        {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError
+            {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                // String idToken = LoginActivity.prefs.getString("idToken", "");
+                headers.put("authorization", "bearer "+LoginActivity.prefs.getString("idToken","0"));
+                return headers;
+            }
+        };
+
+        RequestQueue queue = Volley.newRequestQueue(getContext());
+        queue.add(request);
+    }
 
 
 }

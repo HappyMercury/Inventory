@@ -38,6 +38,7 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
@@ -55,6 +56,18 @@ public class AddNewItem extends AppCompatActivity {
     TextView itemCount;
     Button saveButton;
     RequestQueue requestQueue;
+
+    ArrayList<String> itemNamesList = new ArrayList<>();
+    ArrayList<Integer> itemQuantityList = new ArrayList<>();
+    ArrayList<String> itemIDList = new ArrayList<>();
+
+    String updateId;
+    String updateName;
+    int updateQuantity;
+    int position;
+
+    String action;
+
     String categoryName;
     Bitmap bmp;
     String BOUNDARY = "s2retfgsGSRFsERFGHfgdfgw734yhFHW567TYHSrf4yarg"; //This the boundary which is used by the server to split the post parameters.
@@ -75,10 +88,12 @@ public class AddNewItem extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_item);
 
+        //for getting type of action to be performed
+        Intent startedIntent = getIntent();
+        action = startedIntent.getStringExtra("action");
+
         requestQueue = Volley.newRequestQueue(this);
 
-        Intent startedIntent = getIntent();
-        categoryName = startedIntent.getStringExtra("category name");
 
         itemImageView = findViewById(R.id.itemImage);
 
@@ -116,60 +131,167 @@ public class AddNewItem extends AppCompatActivity {
             }
         });
 
+        if(action.equals("new"))
+        {
+            categoryName = startedIntent.getStringExtra("category name");
+            itemNamesList = startedIntent.getStringArrayListExtra("item name list");
+            itemIDList = startedIntent.getStringArrayListExtra("item id list");
+            itemQuantityList = startedIntent.getIntegerArrayListExtra("item quantity list");
+            position = startedIntent.getIntExtra("position",0);
+        }
+        else if(action.equals("update"))
+        {
+            itemNamesList = startedIntent.getStringArrayListExtra("item name list");
+            itemIDList = startedIntent.getStringArrayListExtra("item id list");
+            itemQuantityList = startedIntent.getIntegerArrayListExtra("item quantity list");
+            position = startedIntent.getIntExtra("position",0);
+            updateId = itemIDList.get(position);//startedIntent.getStringExtra("item id");
+            updateName = itemNamesList.get(position);//startedIntent.getStringExtra("item name");
+            categoryName = startedIntent.getStringExtra("category name");
+            updateQuantity = itemQuantityList.get(position);//startedIntent.getIntExtra("item quantity",0);
+            itemNameEditText.setText(updateName);
+            itemCount.setText(Integer.toString(updateQuantity));
+            itemNameEditText.setEnabled(false);
+
+        }
+
         saveButton = findViewById(R.id.itemSaveButton);
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                requestQueue.add(prepareJSONRequest());
-                Intent categoryInformationIntent = new Intent(getApplicationContext(),CategoryInformation.class);
-                categoryInformationIntent.putExtra("category name",categoryName);
-                startActivity(categoryInformationIntent);
+
+                //////
+
+                if(action.equals("new"))
+                {
+                    JSONObject data = new JSONObject();
+                    try {
+                        data.put("category", categoryName);
+                        System.out.println(categoryName);
+                        data.put("name", itemNameEditText.getText().toString());
+                        System.out.println("Item name: " + itemNameEditText.getText().toString());
+                        itemNamesList.add(itemNameEditText.getText().toString());
+                        data.put("quantity", itemCount.getText().toString());
+                        System.out.println("quantity: " + itemCount.getText().toString());
+                        itemQuantityList.add(Integer.valueOf(itemCount.getText().toString()));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, ApiEndpoints.inventoryEndpoint, data,
+                            new Response.Listener<JSONObject>() {
+                                @Override
+                                public void onResponse(JSONObject response) {
+                                    Toast.makeText(AddNewItem.this, "Item Saved", Toast.LENGTH_SHORT).show();
+                                }
+                            }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Toast.makeText(AddNewItem.this, "Item Not Saved", Toast.LENGTH_SHORT).show();
+                        }
+                    }) {
+                        @Override
+                        public Map<String, String> getHeaders() throws AuthFailureError {
+                            HashMap<String, String> headers = new HashMap<String, String>();
+                            // String idToken = LoginActivity.prefs.getString("idToken", "");
+                            headers.put("authorization", "bearer " + LoginActivity.prefs.getString("idToken", "0"));
+                            return headers;
+                        }
+                    };
+
+                    requestQueue.add(jsonObjectRequest);
+                    Intent categoryInformationIntent = new Intent(AddNewItem.this, CategoryInformation.class);
+                    categoryInformationIntent.putExtra("category name", categoryName);
+                    categoryInformationIntent.putStringArrayListExtra("item name list added/updated", itemNamesList);
+                    categoryInformationIntent.putIntegerArrayListExtra("item quantity list added/updated", itemQuantityList);
+                    categoryInformationIntent.putStringArrayListExtra("item id list added/updated",itemIDList);
+                    startActivity(categoryInformationIntent);
+                }
+
+                else
+                {
+                    JSONObject data = new JSONObject();
+                    try {
+                        data.put("_id",updateId);
+                        data.put("category", categoryName);
+                        System.out.println(categoryName);
+                        data.put("quantity", itemCount.getText().toString());
+                        System.out.println("quantity: " + itemCount.getText().toString());
+
+                        //removing previous items
+                        itemNamesList.remove(position);
+                        itemQuantityList.remove(position);
+                        itemIDList.remove(position);
+
+                        //adding new items
+                        itemIDList.add(position,updateId);
+                        itemNamesList.add(position,updateName);
+                        itemQuantityList.add(position,Integer.valueOf(itemCount.getText().toString()));
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, ApiEndpoints.inventoryEndpoint+"/update", data,
+                            new Response.Listener<JSONObject>() {
+                                @Override
+                                public void onResponse(JSONObject response) {
+                                    Toast.makeText(AddNewItem.this, "Item Saved", Toast.LENGTH_SHORT).show();
+                                }
+                            }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Toast.makeText(AddNewItem.this, "Item Not Saved update", Toast.LENGTH_SHORT).show();
+                        }
+                    }) {
+                        @Override
+                        public Map<String, String> getHeaders() throws AuthFailureError {
+                            HashMap<String, String> headers = new HashMap<String, String>();
+                            // String idToken = LoginActivity.prefs.getString("idToken", "");
+                            headers.put("authorization", "bearer " + LoginActivity.prefs.getString("idToken", "0"));
+                            return headers;
+                        }
+                    };
+
+                    requestQueue.add(jsonObjectRequest);
+                    Intent categoryInformationIntent = new Intent(getApplicationContext(), CategoryInformation.class);
+                    categoryInformationIntent.putExtra("category name", categoryName);
+                    categoryInformationIntent.putStringArrayListExtra("item name list added/updated", itemNamesList);
+                    categoryInformationIntent.putIntegerArrayListExtra("item quantity list added/updated", itemQuantityList);
+                    categoryInformationIntent.putStringArrayListExtra("item id list added/updated",itemIDList);
+                    startActivity(categoryInformationIntent);
+                }
             }
         });
     }
 
-    //for sacing item data
-    JsonObjectRequest prepareJSONRequest()
+    public void updateItem()
     {
-        JSONObject data = new JSONObject();
-        try {
-            data.put("name",itemNameEditText.getText().toString());
-            data.put("category",categoryName);
-            data.put("quantity",itemCount.getText().toString());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,ApiEndpoints.categoryEndpoint, null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Toast.makeText(AddNewItem.this, "Item Saved", Toast.LENGTH_SHORT).show();
-                    }
-                }, new Response.ErrorListener() {
+        JsonObjectRequest updateRequest = new JsonObjectRequest(Request.Method.POST, ApiEndpoints.toDoEndpoint + "/update", null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Intent categoryInformationIntent = new Intent(getApplicationContext(),CategoryInformation.class);
+                categoryInformationIntent.putExtra("category name",categoryName);
+                categoryInformationIntent.putStringArrayListExtra("item name list",itemNamesList);
+                categoryInformationIntent.putIntegerArrayListExtra("item quantity list",itemQuantityList);
+                categoryInformationIntent.putStringArrayListExtra("item id list",itemIDList);
+                startActivity(categoryInformationIntent);
+            }
+        }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(AddNewItem.this, "Item Not Saved", Toast.LENGTH_SHORT).show();
+
             }
-        })
-        {
+        }){
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError
-            {
+            public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 // String idToken = LoginActivity.prefs.getString("idToken", "");
-                headers.put("authorization", "bearer "+LoginActivity.prefs.getString("idToken","0"));
+                headers.put("authorization", "bearer " + LoginActivity.prefs.getString("idToken","0"));
                 return headers;
             }
-
-            @Override
-            public String getBodyContentType() {
-
-                return super.getBodyContentType();
-            }
         };
-        return jsonObjectRequest;
+
+        Volley.newRequestQueue(this).add(updateRequest);
     }
 
     public String getStringImage(Bitmap bmp){

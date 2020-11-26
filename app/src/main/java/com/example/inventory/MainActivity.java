@@ -2,6 +2,7 @@ package com.example.inventory;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.fragment.app.Fragment;
@@ -10,6 +11,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,12 +20,25 @@ import android.view.View;
 import android.widget.Toast;
 
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,18 +48,20 @@ public class MainActivity extends AppCompatActivity {
     public static final int FRAGMENT_SETTINGS = 3;
     int i = 0;
     int itemID = 0;
+    public static HashMap<String,ArrayList<String>> itemNameMap;
+    public static HashMap<String,ArrayList<Integer>> itemQuantityMap;
+    public static HashMap<String,ArrayList<String>> itemIDMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
 
         Intent intent = getIntent();
         i = intent.getIntExtra("FragmentToStart", FRAGMENT_DASHBOARD);
-
+        //getCategoryInfo();
         showFragment(i);
         switch(i)
         {
@@ -110,6 +127,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
         public void logout () {
+        LoginActivity.prefs.edit().remove("idToken").commit();
             FirebaseAuth.getInstance().signOut();
             GoogleSignIn.getClient(this, new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build())
                     .signOut().addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -127,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        public void showFragment(int fragment)
+        public void showFragment(int fragmentID)
         {
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

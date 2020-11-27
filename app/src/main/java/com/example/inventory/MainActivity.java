@@ -2,6 +2,7 @@ package com.example.inventory;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.fragment.app.Fragment;
@@ -10,6 +11,8 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,12 +21,25 @@ import android.view.View;
 import android.widget.Toast;
 
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,18 +49,20 @@ public class MainActivity extends AppCompatActivity {
     public static final int FRAGMENT_SETTINGS = 3;
     int i = 0;
     int itemID = 0;
+    DashboardFragment dashboardFragment;
+    SettingsFragment settingsFragment;
+    ToDoListFragment toDoListFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
 
         Intent intent = getIntent();
         i = intent.getIntExtra("FragmentToStart", FRAGMENT_DASHBOARD);
-
+        //getCategoryInfo();
         showFragment(i);
         switch(i)
         {
@@ -101,7 +119,33 @@ public class MainActivity extends AppCompatActivity {
                 //help
                 break;
             case R.id.share:
-                Toast.makeText(this, "Share", Toast.LENGTH_SHORT).show();
+                Intent email = new Intent(Intent.ACTION_SEND);
+                email.putExtra(Intent.EXTRA_EMAIL, new String[]{});
+                email.putExtra(Intent.EXTRA_SUBJECT, "From Inventory App");
+                //adding message which is to be done after getting data from fragment
+                String message="";
+                switch(i)
+                {
+                    case FRAGMENT_DASHBOARD:
+                        message = dashboardFragment.getMessage();
+                        break;
+                    case FRAGMENT_SETTINGS:
+                        Fragment settingsFragment = new SettingsFragment();
+                        message = "Settings";
+                        break;
+                    case FRAGMENT_TODOLIST:
+                        message = toDoListFragment.getToDoMessage();
+                        break;
+                    default:
+                        Toast.makeText(MainActivity.this, "Uh-Oh", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+                email.putExtra(Intent.EXTRA_TEXT, message);
+
+//need this to prompts email client only
+                email.setType("message/rfc822");
+
+                startActivity(Intent.createChooser(email, "Choose an Email client :"));
                 break;
             default:
                 super.onOptionsItemSelected(item);
@@ -110,6 +154,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
         public void logout () {
+        LoginActivity.prefs.edit().remove("idToken").commit();
             FirebaseAuth.getInstance().signOut();
             GoogleSignIn.getClient(this, new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build())
                     .signOut().addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -127,26 +172,26 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        public void showFragment(int fragment)
+        public void showFragment(int fragmentID)
         {
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
             switch (i) {
                 case FRAGMENT_DASHBOARD:
-                    DashboardFragment dashboardFragment = new DashboardFragment();
+                    dashboardFragment = new DashboardFragment();
                     fragmentTransaction.replace(R.id.fragment_display, dashboardFragment).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                     fragmentTransaction.addToBackStack("dashboard");
                     fragmentTransaction.commit();
                     break;
                 case FRAGMENT_SETTINGS:
-                    SettingsFragment settingsFragment = new SettingsFragment();
+                    settingsFragment = new SettingsFragment();
                     fragmentTransaction.replace(R.id.fragment_display, settingsFragment).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                     fragmentTransaction.addToBackStack("settings");
                     fragmentTransaction.commit();
                     break;
                 case FRAGMENT_TODOLIST:
-                    ToDoListFragment toDoListFragment = new ToDoListFragment();
+                    toDoListFragment = new ToDoListFragment();
                     fragmentTransaction.replace(R.id.fragment_display, toDoListFragment).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                     fragmentTransaction.addToBackStack("to-do list");
                     fragmentTransaction.commit();
@@ -172,21 +217,21 @@ public class MainActivity extends AppCompatActivity {
             switch (i) {
                 case FRAGMENT_DASHBOARD:
                     item.setChecked(true);
-                    DashboardFragment dashboardFragment = new DashboardFragment();
+                    dashboardFragment = new DashboardFragment();
                     fragmentTransaction.replace(R.id.fragment_display, dashboardFragment).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                     fragmentTransaction.addToBackStack("dashboard");
                     fragmentTransaction.commit();
                     break;
                 case FRAGMENT_SETTINGS:
                     item.setChecked(true);
-                    SettingsFragment settingsFragment = new SettingsFragment();
+                    settingsFragment = new SettingsFragment();
                     fragmentTransaction.replace(R.id.fragment_display, settingsFragment).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                     fragmentTransaction.addToBackStack("settings");
                     fragmentTransaction.commit();
                     break;
                 case FRAGMENT_TODOLIST:
                     item.setChecked(true);
-                    ToDoListFragment toDoListFragment = new ToDoListFragment();
+                    toDoListFragment = new ToDoListFragment();
                     fragmentTransaction.replace(R.id.fragment_display, toDoListFragment).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                     fragmentTransaction.addToBackStack("to-do list");
                     fragmentTransaction.commit();

@@ -15,10 +15,23 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class DashboardFragment extends Fragment {
 
@@ -31,11 +44,14 @@ public class DashboardFragment extends Fragment {
     private String mParam2;
 
     ArrayList<DashboardItem> dashboardList = new ArrayList<>();
+    ArrayList<String> categoryNameList = new ArrayList<>();
+    ArrayList<Integer> categoryCount = new ArrayList<>();
+    DashboardAdapter dashboardAdapter;
+    HashMap<String, ArrayList<String>> itemNameList = new HashMap<>();
+    HashMap<String, ArrayList<Integer>> itemQuantityList = new HashMap<>();
+    HashMap<String, ArrayList<String>> itemIDList = new HashMap<>();
 
     public DashboardFragment() {
-        dashboardList.add(new DashboardItem("Groceries",5));
-        dashboardList.add(new DashboardItem("Home Appliances",6));
-        dashboardList.add(new DashboardItem("Kitchen",7));
         // Required empty public constructor
     }
 
@@ -63,8 +79,58 @@ public class DashboardFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        DashboardAdapter dashboardAdapter = new DashboardAdapter(getActivity(),0,dashboardList);
+        dashboardAdapter = new DashboardAdapter(getActivity(),0,dashboardList);
         View rootView = inflater.inflate(R.layout.fragment_dashboard, container, false);
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, ApiEndpoints.inventoryEndpoint, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                ArrayList<String> categoryNames = new ArrayList<>();
+                try
+                {
+                    for(int i=0;i<response.getJSONArray("data").length();i++)
+                    {
+                            System.out.println("Value of i: "+i);
+                            categoryNames.add(response.getJSONArray("data").getJSONObject(i).getString("category"));
+                            categoryCount.add(response.getJSONArray("data").getJSONObject(i).getJSONArray("items").length());
+                            dashboardList.add(new DashboardItem(categoryNames.get(i), categoryCount.get(i)));
+                            ArrayList<String> itemNames = new ArrayList<>();
+                            ArrayList<Integer> itemQuantity = new ArrayList<>();
+                            ArrayList<String> itemID = new ArrayList<>();
+                            for (int j = 0; j < response.getJSONArray("data").getJSONObject(i).getJSONArray("items").length(); j++) {
+                                itemNames.add(response.getJSONArray("data").getJSONObject(i).getJSONArray("items").getJSONObject(j).getString("name"));
+                                itemQuantity.add(response.getJSONArray("data").getJSONObject(i).getJSONArray("items").getJSONObject(j).getInt("quantity"));
+                                itemID.add(response.getJSONArray("data").getJSONObject(i).getJSONArray("items").getJSONObject(j).getString("_id"));
+                            }
+                            itemNameList.put(response.getJSONArray("data").getJSONObject(i).getString("category"), itemNames);
+                            itemQuantityList.put(response.getJSONArray("data").getJSONObject(i).getString("category"), itemQuantity);
+                            itemIDList.put(response.getJSONArray("data").getJSONObject(i).getString("category"), itemID);
+                    }
+                    categoryNameList.addAll(categoryNames);
+                }
+                catch (JSONException e)
+                {
+                    e.printStackTrace();
+                }
+                dashboardAdapter = new DashboardAdapter(getContext(),0,dashboardList);
+                dashboardListView.setAdapter(dashboardAdapter);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getActivity(), "Category Name error", Toast.LENGTH_SHORT).show();
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                // String idToken = LoginActivity.prefs.getString("idToken", "");
+                headers.put("authorization", "bearer " + LoginActivity.prefs.getString("idToken", "0"));
+                return headers;
+            }
+        };
+        Volley.newRequestQueue(getActivity()).add(request);
+
         dashboardListView = rootView.findViewById(R.id.dashboardListView);
         dashboardFloatingActionButton = rootView.findViewById(R.id.dashboardFloatingActionButton);
         dashboardFloatingActionButton.setOnClickListener(new View.OnClickListener() {
@@ -88,6 +154,7 @@ public class DashboardFragment extends Fragment {
                                 Toast.makeText(getActivity().getBaseContext(), "Category Created", Toast.LENGTH_SHORT).show();
                                 Intent addCategoryIntent = new Intent(getActivity().getApplicationContext(),AddNewItem.class);
                                 addCategoryIntent.putExtra("category name",categoryNameEditText.getText().toString());
+                                addCategoryIntent.putExtra("action","new");
                                 startActivity(addCategoryIntent);
                             }
                         });
@@ -96,15 +163,38 @@ public class DashboardFragment extends Fragment {
                 dialog.show();
             }
         });
-        dashboardListView.setAdapter(dashboardAdapter);
+
         dashboardListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getActivity(),CategoryInformation.class);
+                intent.putExtra("category name",categoryNameList.get(position));
                 startActivity(intent);
             }
         });
+
+        dashboardListView.setAdapter(dashboardAdapter);
+
         return rootView;
     }
+
+
+    public String getMessage()
+    {
+        String message="";
+        for(int i=0;i<categoryNameList.size();i++)
+        {
+            message += Integer.toString(i+1)+") Category: "+categoryNameList.get(i);
+            ArrayList<String> itemNames = itemNameList.get(categoryNameList.get(i));
+            ArrayList<Integer> itemQuantities = itemQuantityList.get(categoryNameList.get(i));
+            for(int j=0;j<itemNameList.get(categoryNameList.get(i)).size();j++)
+            {
+                message+="\n"+Integer.toString(j+1)+") "+itemNames.get(j)+" : "+itemQuantities.get(j);
+            }
+            message+="\n\n**************************\n\n";
+        }
+            return message;
+    }
+
 
 }

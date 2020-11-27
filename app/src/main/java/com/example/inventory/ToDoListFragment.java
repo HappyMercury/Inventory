@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ListView;
@@ -65,22 +66,12 @@ public class ToDoListFragment extends Fragment {
 
     ArrayList<ToDoListElement> toDoListElementArrayList = new ArrayList<>();
     ArrayList<String> itemIdArrayList = new ArrayList<>();
+    ArrayList<String> titleArrayList = new ArrayList<>();
+    ArrayList<String> descriptionArrayList = new ArrayList<>();
+    ArrayList<Long> timeArrayList = new ArrayList<>();
     ToDoListAdapter toDoListArrayAdapter;
     boolean reminder = false;
     int length = 0;
-
-    Call post(MediaType mediaType,int position, OkHttpClient client, Callback callback) {
-        RequestBody body = RequestBody.create(mediaType, "_id="+itemIdArrayList.get(position));
-        okhttp3.Request request = new okhttp3.Request.Builder()
-                .url(ApiEndpoints.toDoEndpoint)
-                .method("DELETE", body)
-                .addHeader("authorization", "Bearer "+LoginActivity.prefs.getString("idToken","0"))
-                .addHeader("Content-Type", "application/x-www-form-urlencoded")
-                .build();
-        Call call = client.newCall(request);
-        call.enqueue(callback);
-        return call;
-    }
 
     public ToDoListFragment() {
 
@@ -113,15 +104,9 @@ public class ToDoListFragment extends Fragment {
 
         ListView toDoListListView = rootView.findViewById(R.id.toDoListListView);
         GifImageView emptyToDoListImageView = rootView.findViewById(R.id.emptyToDoListImageView);
+        emptyToDoListImageView.setAlpha(0.6f);
 
         FloatingActionButton toDoListFloatingActionButton = rootView.findViewById(R.id.toDoListFloatingActionButton);
-        toDoListFloatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(),NewToDoListItem.class);
-                startActivity(intent);
-            }
-        });
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, ApiEndpoints.toDoEndpoint,null,
                 new Response.Listener<JSONObject>()
@@ -140,11 +125,15 @@ public class ToDoListFragment extends Fragment {
                                 {
                                     reminder = true;
                                 }
+                                titleArrayList.add(dataArray.getJSONObject(i).getString("title"));
+                                descriptionArrayList.add(dataArray.getJSONObject(i).getString("description"));
+                                timeArrayList.add(dataArray.getJSONObject(i).getLong("time"));
+                                System.out.println("Time: "+dataArray.getJSONObject(i).getInt("time"));
                                 itemIdArrayList.add(dataArray.getJSONObject(i).getString("_id"));
                                 toDoListElementArrayList.add(new ToDoListElement(dataArray.getJSONObject(i).getString("title"), reminder));
                             }
                             toDoListArrayAdapter = new ToDoListAdapter(getContext(),0,toDoListElementArrayList);
-                            if(toDoListElementArrayList.size()>1) {
+                            if(toDoListElementArrayList.size()>=1) {
                                 toDoListListView.setVisibility(View.VISIBLE);
                                 emptyToDoListImageView.setVisibility(View.GONE);
                             }
@@ -184,7 +173,10 @@ public class ToDoListFragment extends Fragment {
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-
+                                deletionRequest(itemIdArrayList.get(position));
+                                toDoListElementArrayList.remove(position);
+                                toDoListArrayAdapter = new ToDoListAdapter(getContext(),0,toDoListElementArrayList);
+                                toDoListListView.setAdapter(toDoListArrayAdapter);
                                 //add code for deletion here
                             }
                         })
@@ -200,6 +192,30 @@ public class ToDoListFragment extends Fragment {
                 return true;
             }
         });
+
+        toDoListFloatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(),NewToDoListItem.class);
+                intent.putExtra("action","new");
+                startActivity(intent);
+            }
+        });
+
+        //settings item click listener
+        toDoListListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getContext(),NewToDoListItem.class);
+                intent.putExtra("action","update");
+                intent.putExtra("title",titleArrayList.get(position));
+                intent.putExtra("description",descriptionArrayList.get(position));
+                intent.putExtra("time",timeArrayList.get(position));
+                intent.putExtra("id",itemIdArrayList.get(position));
+                startActivity(intent);
+            }
+        });
+
         if(toDoListElementArrayList.size()<1)
         {
             toDoListListView.setVisibility(View.GONE);
@@ -216,6 +232,51 @@ public class ToDoListFragment extends Fragment {
         return rootView;
     }
 
+    void deletionRequest(String id)
+    {
+        JSONObject data = new JSONObject();
+        try {
+            data.put("_id",id);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, ApiEndpoints.toDoEndpoint+"/delete", data, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Toast.makeText(getContext(), "Item deleted", Toast.LENGTH_SHORT).show();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        })
+        {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError
+            {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                // String idToken = LoginActivity.prefs.getString("idToken", "");
+                headers.put("authorization", "bearer "+LoginActivity.prefs.getString("idToken","0"));
+                return headers;
+            }
+        };
+
+        RequestQueue queue = Volley.newRequestQueue(getContext());
+        queue.add(request);
+    }
+
+
+    public String getToDoMessage()
+    {
+        String message="";
+        for(int i=0;i<titleArrayList.size();i++)
+        {
+            message+=Integer.toString(i+1)+") Title: "+titleArrayList.get(i)+"\nDescription: "+descriptionArrayList.get(i)+"\nReminder Time: "+timeArrayList.get(i)+"\n\n";
+        }
+        return message;
+    }
 
 
 }

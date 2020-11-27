@@ -39,4 +39,7 @@ public class DashboardAdapter extends ArrayAdapter<DashboardItem> {
         return mCategoryItem;
 
     }
+
+
+
 }

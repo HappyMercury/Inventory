@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -47,6 +48,10 @@ public class NewToDoListItem extends AppCompatActivity {
     //public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
     private DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmm", Locale.ENGLISH); //Specify your locale
     long unixTime;
+    String id="";
+    String api = ApiEndpoints.toDoEndpoint;
+    String title;
+    String description;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,12 +60,51 @@ public class NewToDoListItem extends AppCompatActivity {
 
         CardView cardView = findViewById(R.id.cardView);
         TextInputEditText toDoListTitleTextInput = findViewById(R.id.toDoListTitleTextInput);
-        TextInputEditText toDoListDescriptionTextInput = findViewById(R.id.toDoListTitleTextInput);
+        TextInputEditText toDoListDescriptionTextInput = findViewById(R.id.toDoListDescriptionTextInput);
         TextView reminderHeader = findViewById(R.id.reminderHeader);
         TimePicker timePicker = findViewById(R.id.reminderClock);
         DatePicker datePicker = findViewById(R.id.toDoListDatePicker);
         ToggleButton toggleButton = findViewById(R.id.toDoListToggleButton);
-        toggleButton.setChecked(false);
+
+        Intent startedIntent = getIntent();
+        String action = startedIntent.getStringExtra("action");
+
+        if(action.equals("update"))
+        {
+            title = startedIntent.getStringExtra("title");
+            description = startedIntent.getStringExtra("description");
+            unixTime = startedIntent.getLongExtra("time",0);
+            if(unixTime==0)
+            {
+                toggleButton.setChecked(false);
+                dateTimeOn = false;
+                timePicker.setVisibility(View.GONE);
+                datePicker.setVisibility(View.GONE);
+                datePicker.setEnabled(false);
+                timePicker.setEnabled(false);
+            }
+            else {
+                toggleButton.setChecked(true);
+                toggleButton.setEnabled(true);
+                dateTimeOn = true;
+                timePicker.setEnabled(true);
+                datePicker.setEnabled(true);
+                timePicker.setVisibility(View.VISIBLE);
+                datePicker.setVisibility(View.VISIBLE);
+            }
+            id = startedIntent.getStringExtra("id");
+
+            api = api+"/update";
+
+            System.out.println("Time:"+unixTime);
+            System.out.println("Title: "+title);
+            System.out.println("Description:"+description);
+
+            toDoListDescriptionTextInput.setText(description);
+            toDoListTitleTextInput.setText(title);
+
+        }
+
 
         toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -72,6 +116,8 @@ public class NewToDoListItem extends AppCompatActivity {
                     datePicker.setVisibility(View.GONE);
                     datePicker.setEnabled(false);
                     timePicker.setEnabled(false);
+                    unixTime = 0;
+                    System.out.println(" after changing Time:"+unixTime);
                 }
                 else
                 {
@@ -106,23 +152,40 @@ public class NewToDoListItem extends AppCompatActivity {
                     unixTime = 0;
                 }
 
-                String title = toDoListTitleTextInput.getText().toString();
-                String description = toDoListDescriptionTextInput.getText().toString();
+                title = toDoListTitleTextInput.getText().toString();
+                description = toDoListDescriptionTextInput.getText().toString();
 
-                JSONObject data = new JSONObject();
-                try {
-                    data.put("title",title);
-                    data.put("description",description);
-                    data.put("time",unixTime);
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                JSONObject data;
+
+                if(action.equals("new")) {
+                    data = new JSONObject();
+                    try {
+                        data.put("title", title);
+                        data.put("description", description);
+                        data.put("time", unixTime);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                else
+                {
+                    data = new JSONObject();
+                    try {
+                        data.put("_id", id);
+                        data.put("title", title);
+                        data.put("description", description);
+                        data.put("time", unixTime);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
 
-                JsonObjectRequest jsonArrayRequest = new JsonObjectRequest(Request.Method.POST, ApiEndpoints.toDoEndpoint,data,
+                JsonObjectRequest jsonArrayRequest = new JsonObjectRequest(Request.Method.POST, api,data,
                         new Response.Listener<JSONObject>()
                         {
                             @Override
                             public void onResponse(JSONObject responseArray) {
+                                System.out.println("Saving time: "+unixTime);
                                 Toast.makeText(NewToDoListItem.this, "Item Saved", Toast.LENGTH_SHORT).show();
                             }
                         }, new Response.ErrorListener() {

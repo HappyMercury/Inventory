@@ -66,7 +66,7 @@ public class LoginActivity extends AppCompatActivity {
         showPwdLogin = findViewById(R.id.showPwdLogin);
         prefs = this.getSharedPreferences("com.example.nec.myapplication", Context.MODE_PRIVATE);
 
-
+        MyFirebaseMessagingService.getToken(this);
 
         firebaseAuth = FirebaseAuth.getInstance();
 
@@ -85,9 +85,24 @@ public class LoginActivity extends AppCompatActivity {
             googleName = firebaseUser.getDisplayName();
             googleEmail = firebaseUser.getEmail();
             googlePhotoURL = firebaseUser.getPhotoUrl();
-
+            FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
+            mUser.getIdToken(true)
+                    .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
+                        public void onComplete(@NonNull Task<GetTokenResult> task) {
+                            if (task.isSuccessful()) {
+                                idToken = task.getResult().getToken();
+                                System.out.println("Token: "+idToken);
+                                prefs.edit().putString("idToken", idToken).apply();
+                                // Send token to your backend via HTTPS
+                                // ...
+                            } else {
+                                // Handle error -> task.getException();
+                            }
+                        }
+                    });
             Toast.makeText(this, "User is already logged in", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(this,MainActivity.class);
+
             intent.putExtra("FragmentToStart",MainActivity.FRAGMENT_DASHBOARD);
             startActivity(intent);
         }

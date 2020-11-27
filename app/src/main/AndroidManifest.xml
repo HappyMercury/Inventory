@@ -12,9 +12,18 @@
         android:roundIcon="@raw/inventory"
         android:supportsRtl="true"
         android:theme="@style/Theme.Inventory">
+        <service
+            android:name=".MyFirebaseMessagingService"
+            android:stopWithTask="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
         <activity android:name=".SplashActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -24,15 +33,13 @@
         <activity android:name=".NewToDoListItem" />
         <activity
             android:name=".CategoryInformation"
-            android:parentActivityName=".MainActivity" />
-<!--        <activity android:name=".LoginActivity">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
-<!--        </activity>-->
-        <activity android:name=".LoginActivity"/>
+            android:parentActivityName=".MainActivity" /> <!-- <activity android:name=".LoginActivity"> -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="android.intent.action.MAIN" /> -->
+        <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+        <!-- </intent-filter> -->
+        <!-- </activity> -->
+        <activity android:name=".LoginActivity" />
         <activity android:name=".MainActivity" />
         <activity android:name=".AddNewItem" />
     </application>

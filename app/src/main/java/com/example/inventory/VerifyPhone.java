@@ -160,9 +160,16 @@ public class VerifyPhone extends AppCompatActivity {
                                             .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
                                                 public void onComplete(@NonNull Task<GetTokenResult> task) {
                                                     if (task.isSuccessful()) {
+                                                        LoginActivity.prefs.edit().remove("idToken").commit();
                                                         idToken = task.getResult().getToken();
                                                         System.out.println("Token: "+idToken);
-                                                        prefs.edit().putString("idToken", idToken).apply();
+                                                        try {
+                                                            LoginActivity.prefs.edit().putString("idToken", idToken).apply();
+                                                        }
+                                                        catch (Exception e)
+                                                        {
+                                                            e.printStackTrace();
+                                                        }
                                                         // Send token to your backend via HTTPS
                                                         // ...
                                                     } else {
@@ -171,9 +178,24 @@ public class VerifyPhone extends AppCompatActivity {
                                                 }
                                             });
 
-                                    Intent intent = new Intent(VerifyPhone.this, MainActivity.class);
-                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                    startActivity(intent);
+                                    boolean isNew = task.getResult().getAdditionalUserInfo().isNewUser();
+
+                                    if(isNew == true)
+                                    {
+                                        System.out.println("NEW USER");
+                                        startActivity(new Intent(VerifyPhone.this, UserDetailsSelect.class));
+                                        //finish();
+                                    }
+                                    else
+                                    {
+                                        System.out.println("OLD USER");
+                                        //startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                                        Intent intent = new Intent(VerifyPhone.this, MainActivity.class);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                        startActivity(intent);
+                                    }
+
+
 
                                 } else {
 

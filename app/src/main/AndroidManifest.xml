@@ -12,6 +12,8 @@
         android:roundIcon="@raw/inventory"
         android:supportsRtl="true"
         android:theme="@style/Theme.Inventory">
+        <activity android:name=".UserDetailsSelect"></activity>
+
         <service
             android:name=".MyFirebaseMessagingService"
             android:stopWithTask="false">

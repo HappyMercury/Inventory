@@ -10,7 +10,7 @@
         android:id="@+id/editTextEmail"
         android:layout_width="285dp"
         android:layout_height="44dp"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="200dp"
         android:ems="10"
         android:hint="E-mail"
         android:inputType="textPersonName"
@@ -32,7 +32,7 @@
         android:id="@+id/editTextPwd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="30dp"
         android:ems="10"
         android:hint="Password"
         android:inputType="textPassword"
@@ -61,4 +61,26 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/editTextPwd"
         app:layout_constraintTop_toTopOf="@+id/editTextPwd" />
+
+    <EditText
+        android:id="@+id/editTxtName"
+        android:layout_width="287dp"
+        android:layout_height="46dp"
+        android:layout_marginBottom="80dp"
+        android:ems="10"
+        android:hint="Display Name"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toTopOf="@+id/editTextEmail"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.508"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Spinner
+        android:id="@+id/ProfessionSelectEmail"
+        android:layout_width="285dp"
+        android:layout_height="44dp"
+        android:layout_marginTop="22dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTxtName" />
 </androidx.constraintlayout.widget.ConstraintLayout>

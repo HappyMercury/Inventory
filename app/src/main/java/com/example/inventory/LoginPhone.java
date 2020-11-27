@@ -34,14 +34,14 @@ public class LoginPhone extends AppCompatActivity {
 
                     String mobileNo = editTextMobile.getText().toString().trim();
 
-                    if (mobileNo.isEmpty() || mobileNo.length() < 12) {
+                    if (mobileNo.isEmpty() || mobileNo.length() < 10) {
                         editTextMobile.setError("Enter a valid mobile");
                         editTextMobile.requestFocus();
                         return;
                     }
 
                     Intent intent = new Intent(LoginPhone.this, VerifyPhone.class);
-                    intent.putExtra("mobile", mobileNo);
+                    intent.putExtra("mobile", "91"+mobileNo);
                     startActivity(intent);
                 }
             });

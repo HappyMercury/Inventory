@@ -156,7 +156,7 @@ public class LoginActivity extends AppCompatActivity {
                 String emailval = email.getText().toString();
                 String passwordval = password.getText().toString();
 
-                Pattern emailPattern = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\\\.[A-Z]{2,6}$");
+                Pattern emailPattern = Pattern.compile("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$");
                 Matcher emailmatcher = emailPattern.matcher(emailval);
                 boolean b = emailmatcher.matches();
 
@@ -224,6 +224,9 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         Toast.makeText(getApplicationContext(), "Your account is now connected", Toast.LENGTH_SHORT).show();
+
+
+
                         FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
                         mUser.getIdToken(true)
                                 .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
@@ -242,7 +245,21 @@ public class LoginActivity extends AppCompatActivity {
                         googleName = mUser.getDisplayName();
                         googleEmail = mUser.getEmail();
                         googlePhotoURL = mUser.getPhotoUrl();
-                        startActivity(new Intent(getApplicationContext(),MainActivity.class));
+
+                        boolean isnew = task.getResult().getAdditionalUserInfo().isNewUser();
+                        if(isnew == true)
+                        {
+                            System.out.println("NEW USER");
+                            startActivity(new Intent(LoginActivity.this, UserDetailsSelect.class));
+                            finish();
+                        }
+                        else
+                        {
+                            System.out.println("OLD USER");
+                            startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                        }
+
+
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override

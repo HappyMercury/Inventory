@@ -30,7 +30,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         super.onNewToken(s);
         Log.e("newToken", s);
         System.out.println("FCM token: "+s);
-        //getSharedPreferences("_", MODE_PRIVATE).edit().putString("fb", s).apply();
+        getSharedPreferences("_", MODE_PRIVATE).edit().putString("fb", s).apply();
     }
 
     @Override
@@ -66,7 +66,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     }
 
     public static String getToken(Context context) {
-        return "";//context.getSharedPreferences("_", MODE_PRIVATE).getString("fb", "empty");
+        return context.getSharedPreferences("_", MODE_PRIVATE).getString("fb", "empty");
     }
 
 

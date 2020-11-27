@@ -65,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
 
         token = getIntent().getStringExtra("token");
 
+
+
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
 
         Intent intent = getIntent();

@@ -18,6 +18,12 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -34,6 +40,10 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -55,6 +65,44 @@ public class LoginActivity extends AppCompatActivity {
     GoogleSignInClient signInClient;
     FirebaseAuth firebaseAuth;
     static String idToken;
+
+    void sendfcm(){
+        String FCMTKN = MyFirebaseMessagingService.getToken(this);
+        System.out.println("FCM FROM MAIN: " + FCMTKN);
+
+        JSONObject data = new JSONObject();
+        try {
+            data.put("notif_token",FCMTKN);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, ApiEndpoints.notificationEndpoint,data,
+                new Response.Listener<JSONObject>()
+                {
+                    @Override
+                    public void onResponse(JSONObject responseObject) {
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //Toast.makeText(getActivity(), "Item not saved", Toast.LENGTH_SHORT).show();
+                error.printStackTrace();
+            }
+        }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError
+            {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                //String idToken =
+                headers.put("authorization", "bearer "+ idToken);//LoginActivity.prefs.getString("idToken","0"));
+                return headers;
+            }
+        };
+        Volley.newRequestQueue(LoginActivity.this).add(jsonObjectRequest);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +148,7 @@ public class LoginActivity extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 idToken = task.getResult().getToken();
                                 System.out.println("Token: "+idToken);
+                                sendfcm();
                                 preferencesEditor.putString("idToken", idToken).commit();
                                 // Send token to your backend via HTTPS
                                 // ...
@@ -138,6 +187,7 @@ public class LoginActivity extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 idToken = task.getResult().getToken();
                                 System.out.println("Token: "+idToken);
+                                sendfcm();
                                 preferencesEditor.putString("idToken", idToken).commit();
                                 // Send token to your backend via HTTPS
                                 // ...
@@ -243,6 +293,7 @@ public class LoginActivity extends AppCompatActivity {
                                                             if (task.isSuccessful()) {
                                                                 idToken = task.getResult().getToken();
                                                                 System.out.println("Token: "+idToken);
+                                                                sendfcm();
                                                                 preferencesEditor.putString("idToken", idToken).commit();
                                                                 // Send token to your backend via HTTPS
                                                                 // ...
@@ -318,6 +369,7 @@ public class LoginActivity extends AppCompatActivity {
                                         if (task.isSuccessful()) {
                                             idToken = task.getResult().getToken();
                                             System.out.println("Token: "+idToken);
+                                            sendfcm();
                                             preferencesEditor.putString("idToken", idToken).commit();
                                             // Send token to your backend via HTTPS
                                             // ...

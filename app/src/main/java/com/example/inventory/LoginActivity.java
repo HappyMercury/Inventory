@@ -64,7 +64,7 @@ public class LoginActivity extends AppCompatActivity {
     GoogleSignInOptions gso;
     GoogleSignInClient signInClient;
     FirebaseAuth firebaseAuth;
-    static String idToken;
+    String idToken;
 
     void sendfcm(){
         String FCMTKN = MyFirebaseMessagingService.getToken(this);
@@ -161,6 +161,7 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(this, "User is already logged in", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(this,MainActivity.class);
             intent.putExtra("FragmentToStart",MainActivity.FRAGMENT_DASHBOARD);
+            intent.putExtra("token",idToken);
             startActivity(intent);
 
         }
@@ -196,6 +197,8 @@ public class LoginActivity extends AppCompatActivity {
                             }
                         }
                     });
+
+
 //            LoginActivity.prefs.edit().remove("idToken").commit();
 //            FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
 //            mUser.getIdToken(true)
@@ -320,7 +323,8 @@ public class LoginActivity extends AppCompatActivity {
 //                                                        }
 //                                                    });
 
-                                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+
+                                            startActivity(new Intent(LoginActivity.this, MainActivity.class).putExtra("token",idToken));
                                             finish();
                                         } else {
                                             Toast.makeText(LoginActivity.this, "Please verify email address", Toast.LENGTH_SHORT).show();
@@ -356,8 +360,6 @@ public class LoginActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         Toast.makeText(getApplicationContext(), "Your account is now connected", Toast.LENGTH_SHORT).show();
 
-
-
                         SharedPreferences.Editor preferencesEditor = prefs.edit();
                         preferencesEditor.clear();
                         preferencesEditor.commit();
@@ -378,6 +380,7 @@ public class LoginActivity extends AppCompatActivity {
                                         }
                                     }
                                 });
+
 
 //                        FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
 //                        mUser.getIdToken(true)
@@ -408,7 +411,8 @@ public class LoginActivity extends AppCompatActivity {
                         else
                         {
                             System.out.println("OLD USER");
-                            startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                            System.out.println("MAin to yeahan hoon");
+                            startActivity(new Intent(getApplicationContext(),MainActivity.class).putExtra("token",idToken));
                         }
 
 
@@ -425,5 +429,10 @@ public class LoginActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
     }
 }

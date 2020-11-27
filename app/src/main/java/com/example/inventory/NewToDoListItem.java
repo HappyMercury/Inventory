@@ -30,6 +30,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DateFormat;
+import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -145,7 +146,13 @@ public class NewToDoListItem extends AppCompatActivity {
                     minute = timePicker.getCurrentMinute();
                     hour = timePicker.getCurrentHour();
 
-                    unixTime = timeConversion(Integer.toString(year)+Integer.toString(month)+Integer.toString(day)+Integer.toString(hour)+Integer.toString(minute));
+                    try {
+                        unixTime = timeConversion(Integer.toString(month)+"-"+Integer.toString(day)+"-"+Integer.toString(year)+" "+Integer.toString(hour)+":"+Integer.toString(minute)+":00");
+                        //"yyyy-MM-dd HH:mm:ss.SSS"
+                        //"mm-dd-yyyy hh:mm:ss"
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                 }
                 else
                 {
@@ -198,7 +205,7 @@ public class NewToDoListItem extends AppCompatActivity {
                     public Map<String, String> getHeaders() throws AuthFailureError
                     {
                         HashMap<String, String> headers = new HashMap<String, String>();
-                        headers.put("authorization", "bearer "+LoginActivity.idToken);
+                        headers.put("authorization", "bearer "+getSharedPreferences("com.example.inventory",MODE_PRIVATE).getString("idToken",""));
                         return headers;
                     }
                 };
@@ -215,15 +222,28 @@ public class NewToDoListItem extends AppCompatActivity {
 
     }
 
-        public long timeConversion(String time) {
+        public long timeConversion(String time) throws ParseException {
             long unixTime = 0;
-            dateFormat.setTimeZone(TimeZone.getTimeZone("GMT+5:30")); //Specify your timezone
-            try {
-                unixTime = dateFormat.parse(time).getTime();
-                unixTime = unixTime / 1000;
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
+//            dateFormat.setTimeZone(TimeZone.getTimeZone("GMT+5:30")); //Specify your timezone
+//            try {
+//                unixTime = dateFormat.parse(time).getTime();
+//                unixTime = unixTime / 1000;
+//            } catch (ParseException e) {
+//                e.printStackTrace();
+//            }
+
+            SimpleDateFormat f = new SimpleDateFormat("mm-dd-yyyy hh:mm:ss");
+            Date d = f.parse(time);
+            String str = f.format(d);
+            System.out.println("time is: "+str);
+            System.out.println("time is 2nd time:"+ d.getTime());
+
+//            String myDate = time;
+//            SimpleDateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//            Date date = dateFormat1.parse(myDate);
+//            long epoch = date.getTime();
+//            System.out.println(epoch);
+            unixTime = d.getTime()/1000;
             return unixTime;
         }
 

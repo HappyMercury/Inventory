@@ -23,6 +23,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.animation.MotionSpec;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONException;
@@ -53,6 +54,8 @@ public class CategoryInformation extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category_information);
+
+        preferences = getSharedPreferences("com.example.inventory", MODE_PRIVATE);
 
         GifImageView emptyImageView = findViewById(R.id.emptyImageView);
         emptyImageView.setVisibility(View.GONE);

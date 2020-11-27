@@ -6,5 +6,6 @@ public class ApiEndpoints {
     public static String toDoEndpoint = "https://imbphc.ml/api/todo";
     public static String loginEndpoint="https://imbphc.ml/api/user";
     public static String fileUploadEndpoint = "https://imbphc.ml/api/upload";
+    public static String notificationEndpoint = "https://imbphc.ml/api/user/notification";
 
 }

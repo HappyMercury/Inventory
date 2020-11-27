@@ -104,6 +104,26 @@
                     android:layout_margin="50dp"
                     android:id="@+id/itemSaveButton"/>
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/amazonHeading"
+                    android:text="link for buying item:"
+                    android:layout_below="@id/itemSaveButton"
+                    android:textSize="20sp"
+                    android:layout_margin="8dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/amazonLink"
+                    android:visibility="gone"
+                    android:clickable="true"
+                    android:layout_below="@id/amazonHeading"
+                    android:textSize="20sp"
+                    android:layout_margin="8dp"
+                    android:autoLink="web"/>
+
 
 
             </RelativeLayout>

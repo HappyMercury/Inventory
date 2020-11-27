@@ -38,12 +38,15 @@ public class VerifyPhone extends AppCompatActivity {
     Button btnSignIn;
     static String idToken;
     private boolean mVerificationInProgress = false;
+    SharedPreferences preferences;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verify_phone);
+
+        preferences = getSharedPreferences("com.example.inventory",MODE_PRIVATE);
 
         //initializing objects
         mAuth = FirebaseAuth.getInstance();
@@ -155,21 +158,18 @@ public class VerifyPhone extends AppCompatActivity {
                                 if (task.isSuccessful()) {
                                     //verification successful we will start the profile activity
 
+                                    SharedPreferences.Editor preferencesEditor = preferences.edit();
+                                    preferencesEditor.clear();
+                                    preferencesEditor.commit();
+//            LoginActivity.prefs.edit().remove("idToken").commit();
                                     FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
                                     mUser.getIdToken(true)
                                             .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
                                                 public void onComplete(@NonNull Task<GetTokenResult> task) {
                                                     if (task.isSuccessful()) {
-                                                        LoginActivity.prefs.edit().remove("idToken").commit();
                                                         idToken = task.getResult().getToken();
                                                         System.out.println("Token: "+idToken);
-                                                        try {
-                                                            LoginActivity.prefs.edit().putString("idToken", idToken).apply();
-                                                        }
-                                                        catch (Exception e)
-                                                        {
-                                                            e.printStackTrace();
-                                                        }
+                                                        preferencesEditor.putString("idToken", idToken).commit();
                                                         // Send token to your backend via HTTPS
                                                         // ...
                                                     } else {
@@ -177,6 +177,29 @@ public class VerifyPhone extends AppCompatActivity {
                                                     }
                                                 }
                                             });
+
+//                                    FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
+//                                    mUser.getIdToken(true)
+//                                            .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
+//                                                public void onComplete(@NonNull Task<GetTokenResult> task) {
+//                                                    if (task.isSuccessful()) {
+//                                                        LoginActivity.prefs.edit().remove("idToken").commit();
+//                                                        idToken = task.getResult().getToken();
+//                                                        System.out.println("Token: "+idToken);
+//                                                        try {
+//                                                            LoginActivity.prefs.edit().putString("idToken", idToken).apply();
+//                                                        }
+//                                                        catch (Exception e)
+//                                                        {
+//                                                            e.printStackTrace();
+//                                                        }
+//                                                        // Send token to your backend via HTTPS
+//                                                        // ...
+//                                                    } else {
+//                                                        // Handle error -> task.getException();
+//                                                    }
+//                                                }
+//                                            });
 
                                     boolean isNew = task.getResult().getAdditionalUserInfo().isNewUser();
 

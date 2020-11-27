@@ -3,6 +3,7 @@ package com.example.inventory;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.media.audiofx.DynamicsProcessing;
@@ -88,6 +89,13 @@ public class AddNewItem extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_item);
 
+        TextView amazonHeading = findViewById(R.id.amazonHeading);
+        TextView amazonLink = findViewById(R.id.amazonLink);
+        amazonHeading.setVisibility(View.GONE);
+        amazonLink.setVisibility(View.GONE);
+
+        SharedPreferences preferences = getSharedPreferences("com.example.inventory",MODE_PRIVATE);
+
         //for getting type of action to be performed
         Intent startedIntent = getIntent();
         action = startedIntent.getStringExtra("action");
@@ -144,6 +152,11 @@ public class AddNewItem extends AppCompatActivity {
             updateQuantity = startedIntent.getIntExtra("item quantity",0);
             itemNameEditText.setText(updateName);
             itemCount.setText(Integer.toString(updateQuantity));
+            if(updateQuantity<=2)
+            {
+                amazonHeading.setVisibility(View.VISIBLE);amazonLink.setText("https://www.amazon.in/s?k="+updateName);
+                amazonLink.setVisibility(View.VISIBLE);
+            }
         }
 
         saveButton = findViewById(R.id.itemSaveButton);
@@ -184,7 +197,7 @@ public class AddNewItem extends AppCompatActivity {
                         public Map<String, String> getHeaders() throws AuthFailureError {
                             HashMap<String, String> headers = new HashMap<String, String>();
                             // String idToken = LoginActivity.prefs.getString("idToken", "");
-                            headers.put("authorization", "bearer " + LoginActivity.prefs.getString("idToken", "0"));
+                            headers.put("authorization", "bearer " + preferences.getString("idToken",""));//LoginActivity.prefs.getString("idToken", "0"));
                             return headers;
                         }
                     };
@@ -235,7 +248,7 @@ public class AddNewItem extends AppCompatActivity {
                         public Map<String, String> getHeaders() throws AuthFailureError {
                             HashMap<String, String> headers = new HashMap<String, String>();
                             // String idToken = LoginActivity.prefs.getString("idToken", "");
-                            headers.put("authorization", "bearer " + LoginActivity.prefs.getString("idToken", "0"));
+                            headers.put("authorization", "bearer " + preferences.getString("idToken",""));//LoginActivity.prefs.getString("idToken", "0"));
                             return headers;
                         }
                     };

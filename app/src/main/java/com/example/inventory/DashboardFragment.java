@@ -1,8 +1,10 @@
 package com.example.inventory;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -79,8 +81,16 @@ public class DashboardFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
+        Bundle b = getArguments();
+        String token = b.getString("token");
+        System.out.println("Dashboard token:"+token);
+
+        SharedPreferences preferences = getContext().getSharedPreferences("com.example.inventory", Context.MODE_PRIVATE);
+
         dashboardAdapter = new DashboardAdapter(getActivity(),0,dashboardList);
         View rootView = inflater.inflate(R.layout.fragment_dashboard, container, false);
+
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, ApiEndpoints.inventoryEndpoint, null, new Response.Listener<JSONObject>() {
             @Override
@@ -125,7 +135,7 @@ public class DashboardFragment extends Fragment {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 // String idToken = LoginActivity.prefs.getString("idToken", "");
-                headers.put("authorization", "bearer " + LoginActivity.prefs.getString("idToken", "0"));
+                headers.put("authorization", "bearer " + preferences.getString("idToken",token));//LoginActivity.prefs.getString("idToken", "0"));
                 return headers;
             }
         };

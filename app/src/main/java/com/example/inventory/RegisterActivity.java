@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
@@ -48,6 +49,8 @@ public class RegisterActivity extends AppCompatActivity {
     CheckBox showbtn;
     String ProfessionEmail;
 
+    SharedPreferences preferences;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +65,7 @@ public class RegisterActivity extends AppCompatActivity {
         UsernameEmail = findViewById(R.id.editTxtName);
         firebaseAuth = FirebaseAuth.getInstance();
 
+        preferences = getSharedPreferences("com.example.inventory",MODE_PRIVATE);
         Spinner professionSpinner = findViewById(R.id.ProfessionSelectEmail);
         ArrayList<String> arrayList = new ArrayList<>();
         arrayList.add("WORKING");
@@ -167,7 +171,7 @@ public class RegisterActivity extends AppCompatActivity {
                                                         {
                                                             HashMap<String, String> headers = new HashMap<String, String>();
                                                             // String idToken = LoginActivity.prefs.getString("idToken", "");
-                                                            headers.put("authorization", "bearer "+LoginActivity.prefs.getString("idToken","0"));
+                                                            headers.put("authorization", "bearer "+preferences.getString("idToken",""));//LoginActivity.prefs.getString("idToken","0"));
                                                             return headers;
                                                         }
                                                     };

@@ -6,6 +6,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,6 +44,8 @@ public class CategoryInformation extends AppCompatActivity {
     ArrayList<Integer> itemQuantityList = new ArrayList<>();
     ArrayList<String> itemIdList = new ArrayList<>();
     Intent intent;
+
+    SharedPreferences preferences;
 
 
     @SuppressLint("ResourceType")
@@ -115,7 +118,7 @@ public class CategoryInformation extends AppCompatActivity {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 // String idToken = LoginActivity.prefs.getString("idToken", "");
-                headers.put("authorization", "bearer " + LoginActivity.prefs.getString("idToken", "0"));
+                headers.put("authorization", "bearer " + preferences.getString("idToken",""));//LoginActivity.prefs.getString("idToken", "0"));
                 return headers;
             }
         };
@@ -219,7 +222,7 @@ public class CategoryInformation extends AppCompatActivity {
             {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 // String idToken = LoginActivity.prefs.getString("idToken", "");
-                headers.put("authorization", "bearer "+LoginActivity.prefs.getString("idToken","0"));
+                headers.put("authorization", "bearer "+preferences.getString("idToken",""));//LoginActivity.prefs.getString("idToken","0"));
                 return headers;
             }
         };

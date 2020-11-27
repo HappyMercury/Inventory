@@ -77,15 +77,15 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                 >
 
-                <com.google.android.material.textfield.TextInputEditText
+                <Spinner
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="App Developer"
-                    android:hint="Occupation"
-                    android:focusedByDefault="true"
-                    android:editable="false"/>
+                    android:id="@+id/profession"
+                    android:elevation="8dp" />
 
             </com.google.android.material.textfield.TextInputLayout>
+
+
 
         </RelativeLayout>
 

@@ -42,7 +42,7 @@ public class LoginActivity extends AppCompatActivity {
     public static final int GOOGLE_SIGN_IN_CODE = 42069;
     public static String googleEmail,googleName;
     public static Uri googlePhotoURL;
-    public static SharedPreferences prefs;
+    private SharedPreferences prefs;
 
     SignInButton signIn;
     EditText email;
@@ -67,7 +67,7 @@ public class LoginActivity extends AppCompatActivity {
         email = findViewById(R.id.editTxtEmail);
         password = findViewById(R.id.editTxtPassword);
         showPwdLogin = findViewById(R.id.showPwdLogin);
-        prefs = this.getSharedPreferences("com.example.nec.myapplication", Context.MODE_PRIVATE);
+        prefs = getSharedPreferences("com.example.inventory", Context.MODE_PRIVATE);
 
 
 
@@ -82,12 +82,17 @@ public class LoginActivity extends AppCompatActivity {
 
         GoogleSignInAccount signInAccount = GoogleSignIn.getLastSignedInAccount(this);
         FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-        if(signInAccount != null ||( firebaseAuth.getCurrentUser() != null&&firebaseUser.isEmailVerified())){
+
+        if(signInAccount!=null)
+        {
             googleName = firebaseUser.getDisplayName();
             googleEmail = firebaseUser.getEmail();
             googlePhotoURL = firebaseUser.getPhotoUrl();
 
-            LoginActivity.prefs.edit().remove("idToken").commit();
+            SharedPreferences.Editor preferencesEditor = prefs.edit();
+            preferencesEditor.clear();
+            preferencesEditor.commit();
+//            LoginActivity.prefs.edit().remove("idToken").commit();
             FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
             mUser.getIdToken(true)
                     .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
@@ -95,7 +100,7 @@ public class LoginActivity extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 idToken = task.getResult().getToken();
                                 System.out.println("Token: "+idToken);
-                                prefs.edit().putString("idToken", idToken).apply();
+                                preferencesEditor.putString("idToken", idToken).commit();
                                 // Send token to your backend via HTTPS
                                 // ...
                             } else {
@@ -107,6 +112,61 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(this, "User is already logged in", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(this,MainActivity.class);
             intent.putExtra("FragmentToStart",MainActivity.FRAGMENT_DASHBOARD);
+            startActivity(intent);
+
+        }
+
+        if(( firebaseAuth.getCurrentUser() != null&&firebaseUser.isEmailVerified())){
+//            googleName = firebaseUser.getDisplayName();
+//            googleEmail = firebaseUser.getEmail();
+//            googlePhotoURL = firebaseUser.getPhotoUrl();
+
+            googleName = "";
+            googleEmail="";
+            googlePhotoURL=null;
+
+
+
+            SharedPreferences.Editor preferencesEditor = prefs.edit();
+            preferencesEditor.clear();
+            preferencesEditor.commit();
+//            LoginActivity.prefs.edit().remove("idToken").commit();
+            FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
+            mUser.getIdToken(true)
+                    .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
+                        public void onComplete(@NonNull Task<GetTokenResult> task) {
+                            if (task.isSuccessful()) {
+                                idToken = task.getResult().getToken();
+                                System.out.println("Token: "+idToken);
+                                preferencesEditor.putString("idToken", idToken).commit();
+                                // Send token to your backend via HTTPS
+                                // ...
+                            } else {
+                                // Handle error -> task.getException();
+                            }
+                        }
+                    });
+//            LoginActivity.prefs.edit().remove("idToken").commit();
+//            FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
+//            mUser.getIdToken(true)
+//                    .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
+//                        public void onComplete(@NonNull Task<GetTokenResult> task) {
+//                            if (task.isSuccessful()) {
+//                                idToken = task.getResult().getToken();
+//                                System.out.println("Token: "+idToken);
+//                                prefs.edit().putString("idToken", idToken).apply();
+//                                // Send token to your backend via HTTPS
+//                                // ...
+//                            } else {
+//                                // Handle error -> task.getException();
+//                            }
+//                        }
+//                    });
+
+            Toast.makeText(this, "User is already logged in", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this,MainActivity.class);
+            intent.putExtra("FragmentToStart",MainActivity.FRAGMENT_DASHBOARD);
+            intent.putExtra("token",idToken);
             startActivity(intent);
         }
 
@@ -172,15 +232,18 @@ public class LoginActivity extends AppCompatActivity {
                                     if (task.isSuccessful()) {
                                         if (firebaseAuth.getCurrentUser().isEmailVerified()) {
 
+                                            SharedPreferences.Editor preferencesEditor = prefs.edit();
+                                            preferencesEditor.clear();
+                                            preferencesEditor.commit();
+//            LoginActivity.prefs.edit().remove("idToken").commit();
                                             FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
                                             mUser.getIdToken(true)
                                                     .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
                                                         public void onComplete(@NonNull Task<GetTokenResult> task) {
                                                             if (task.isSuccessful()) {
-                                                                LoginActivity.prefs.edit().remove("idToken").commit();
                                                                 idToken = task.getResult().getToken();
-                                                                System.out.println("Token: " + idToken);
-                                                                prefs.edit().putString("idToken", idToken).apply();
+                                                                System.out.println("Token: "+idToken);
+                                                                preferencesEditor.putString("idToken", idToken).commit();
                                                                 // Send token to your backend via HTTPS
                                                                 // ...
                                                             } else {
@@ -188,6 +251,23 @@ public class LoginActivity extends AppCompatActivity {
                                                             }
                                                         }
                                                     });
+
+//                                            FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
+//                                            mUser.getIdToken(true)
+//                                                    .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
+//                                                        public void onComplete(@NonNull Task<GetTokenResult> task) {
+//                                                            if (task.isSuccessful()) {
+//                                                                LoginActivity.prefs.edit().remove("idToken").commit();
+//                                                                idToken = task.getResult().getToken();
+//                                                                System.out.println("Token: " + idToken);
+//                                                                prefs.edit().putString("idToken", idToken).apply();
+//                                                                // Send token to your backend via HTTPS
+//                                                                // ...
+//                                                            } else {
+//                                                                // Handle error -> task.getException();
+//                                                            }
+//                                                        }
+//                                                    });
 
                                             startActivity(new Intent(LoginActivity.this, MainActivity.class));
                                             finish();
@@ -227,6 +307,10 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
+                        SharedPreferences.Editor preferencesEditor = prefs.edit();
+                        preferencesEditor.clear();
+                        preferencesEditor.commit();
+//            LoginActivity.prefs.edit().remove("idToken").commit();
                         FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
                         mUser.getIdToken(true)
                                 .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
@@ -234,7 +318,7 @@ public class LoginActivity extends AppCompatActivity {
                                         if (task.isSuccessful()) {
                                             idToken = task.getResult().getToken();
                                             System.out.println("Token: "+idToken);
-                                            prefs.edit().putString("idToken", idToken).apply();
+                                            preferencesEditor.putString("idToken", idToken).commit();
                                             // Send token to your backend via HTTPS
                                             // ...
                                         } else {
@@ -242,6 +326,22 @@ public class LoginActivity extends AppCompatActivity {
                                         }
                                     }
                                 });
+
+//                        FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
+//                        mUser.getIdToken(true)
+//                                .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
+//                                    public void onComplete(@NonNull Task<GetTokenResult> task) {
+//                                        if (task.isSuccessful()) {
+//                                            idToken = task.getResult().getToken();
+//                                            System.out.println("Token: "+idToken);
+//                                            prefs.edit().putString("idToken", idToken).apply();
+//                                            // Send token to your backend via HTTPS
+//                                            // ...
+//                                        } else {
+//                                            // Handle error -> task.getException();
+//                                        }
+//                                    }
+//                                });
                         googleName = mUser.getDisplayName();
                         googleEmail = mUser.getEmail();
                         googlePhotoURL = mUser.getPhotoUrl();

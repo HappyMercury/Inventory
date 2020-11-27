@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -71,6 +72,7 @@ public class ToDoListFragment extends Fragment {
     ArrayList<Long> timeArrayList = new ArrayList<>();
     ToDoListAdapter toDoListArrayAdapter;
     boolean reminder = false;
+    SharedPreferences preferences;
     int length = 0;
 
     public ToDoListFragment() {
@@ -99,6 +101,8 @@ public class ToDoListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         RequestQueue toDoListRequestQueue = Volley.newRequestQueue(getContext());
+
+        preferences = this.getActivity().getSharedPreferences("com.example.inventory", Context.MODE_PRIVATE);
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_to_do_list, container, false);
 
@@ -155,14 +159,14 @@ public class ToDoListFragment extends Fragment {
             {
                 HashMap<String, String> headers = new HashMap<String, String>();
                // String idToken = LoginActivity.prefs.getString("idToken", "");
-                headers.put("authorization", "bearer "+LoginActivity.prefs.getString("idToken","0"));
+                headers.put("authorization", "bearer "+ preferences.getString("idToken",""));//LoginActivity.prefs.getString("idToken","0"));
                 return headers;
             }
         };
 
         toDoListRequestQueue.add(jsonObjectRequest);
 
-        toDoListArrayAdapter = new ToDoListAdapter(getActivity().getApplicationContext(),0,toDoListElementArrayList);
+        toDoListArrayAdapter = new ToDoListAdapter(getContext(),0,toDoListElementArrayList);
 
         toDoListListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
@@ -258,7 +262,7 @@ public class ToDoListFragment extends Fragment {
             {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 // String idToken = LoginActivity.prefs.getString("idToken", "");
-                headers.put("authorization", "bearer "+LoginActivity.prefs.getString("idToken","0"));
+                headers.put("authorization", "bearer "+ preferences.getString("idToken",""));//LoginActivity.prefs.getString("idToken","0"));
                 return headers;
             }
         };

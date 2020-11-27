@@ -3,6 +3,7 @@ package com.example.inventory;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -29,12 +30,17 @@ public class UserDetailsSelect extends AppCompatActivity {
     EditText username;
     String Profession;
 
+    SharedPreferences preferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_details_select);
         registerbtn = findViewById(R.id.btnContinue);
         username = findViewById(R.id.editTxtUsersNamenew);
+
+        preferences = getSharedPreferences("com.example.inventory",MODE_PRIVATE);
+
         Spinner professionSpinner = findViewById(R.id.ProfessionSelect);
         ArrayList<String> arrayList = new ArrayList<>();
         arrayList.add("WORKING");
@@ -96,7 +102,7 @@ public class UserDetailsSelect extends AppCompatActivity {
                     {
                         HashMap<String, String> headers = new HashMap<String, String>();
                         // String idToken = LoginActivity.prefs.getString("idToken", "");
-                        headers.put("authorization", "bearer "+LoginActivity.prefs.getString("idToken","0"));
+                        headers.put("authorization", "bearer "+preferences.getString("idToken",""));//LoginActivity.prefs.getString("idToken","0"));
                         return headers;
                     }
                 };

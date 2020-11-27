@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -53,10 +54,16 @@ public class MainActivity extends AppCompatActivity {
     SettingsFragment settingsFragment;
     ToDoListFragment toDoListFragment;
 
+    String token = "";
+
+    SharedPreferences preferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        token = getIntent().getStringExtra("token");
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
 
@@ -154,7 +161,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
         public void logout () {
-        LoginActivity.prefs.edit().remove("idToken").commit();
+        preferences = getSharedPreferences("com.example.inventory",MODE_PRIVATE);//LoginActivity.prefs.edit().remove("idToken").commit();
+            SharedPreferences.Editor preferencesEditor = preferences.edit();
+            preferencesEditor.clear();
+            preferencesEditor.commit();
             FirebaseAuth.getInstance().signOut();
             GoogleSignIn.getClient(this, new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build())
                     .signOut().addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -180,6 +190,9 @@ public class MainActivity extends AppCompatActivity {
             switch (i) {
                 case FRAGMENT_DASHBOARD:
                     dashboardFragment = new DashboardFragment();
+                    Bundle b = new Bundle();
+                    b.putString("token",token);
+                    dashboardFragment.setArguments(b);
                     fragmentTransaction.replace(R.id.fragment_display, dashboardFragment).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                     fragmentTransaction.addToBackStack("dashboard");
                     fragmentTransaction.commit();
@@ -218,6 +231,9 @@ public class MainActivity extends AppCompatActivity {
                 case FRAGMENT_DASHBOARD:
                     item.setChecked(true);
                     dashboardFragment = new DashboardFragment();
+                    Bundle b = new Bundle();
+                    b.putString("token",token);
+                    dashboardFragment.setArguments(b);
                     fragmentTransaction.replace(R.id.fragment_display, dashboardFragment).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                     fragmentTransaction.addToBackStack("dashboard");
                     fragmentTransaction.commit();

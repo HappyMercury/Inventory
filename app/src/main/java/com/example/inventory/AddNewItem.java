@@ -144,8 +144,6 @@ public class AddNewItem extends AppCompatActivity {
             updateQuantity = startedIntent.getIntExtra("item quantity",0);
             itemNameEditText.setText(updateName);
             itemCount.setText(Integer.toString(updateQuantity));
-            itemNameEditText.setEnabled(false);
-
         }
 
         saveButton = findViewById(R.id.itemSaveButton);
@@ -204,6 +202,7 @@ public class AddNewItem extends AppCompatActivity {
                         data.put("_id",updateId);
                         data.put("category", categoryName);
                         System.out.println(categoryName);
+                        data.put("name",itemNameEditText.getText().toString());
                         data.put("quantity", itemCount.getText().toString());
                         System.out.println("quantity: " + itemCount.getText().toString());
 

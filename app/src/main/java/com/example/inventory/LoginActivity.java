@@ -34,6 +34,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+import java.util.regex.*;
+
 public class LoginActivity extends AppCompatActivity {
 
     public static final int GOOGLE_SIGN_IN_CODE = 42069;
@@ -152,49 +154,58 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String emailval = email.getText().toString();
                 String passwordval = password.getText().toString();
+                Pattern emailPattern = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\\\.[A-Z]{2,6}$");
+                Matcher emailmatcher = emailPattern.matcher(emailval);
+                boolean b = emailmatcher.matches();
 
-                firebaseAuth.signInWithEmailAndPassword(emailval, passwordval).addOnCompleteListener(
-                        new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
-                                    if(firebaseAuth.getCurrentUser().isEmailVerified()){
+                if(b==false)
+                {
+                    Toast.makeText(LoginActivity.this, "Enter a valid email address", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    firebaseAuth.signInWithEmailAndPassword(emailval, passwordval).addOnCompleteListener(
+                            new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
+                                        if (firebaseAuth.getCurrentUser().isEmailVerified()) {
 
-                                        FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
-                                        mUser.getIdToken(true)
-                                                .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
-                                                    public void onComplete(@NonNull Task<GetTokenResult> task) {
-                                                        if (task.isSuccessful()) {
-                                                            idToken = task.getResult().getToken();
-                                                            System.out.println("Token: "+idToken);
-                                                            prefs.edit().putString("idToken", idToken).apply();
-                                                            // Send token to your backend via HTTPS
-                                                            // ...
-                                                        } else {
-                                                            // Handle error -> task.getException();
+                                            FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
+                                            mUser.getIdToken(true)
+                                                    .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
+                                                        public void onComplete(@NonNull Task<GetTokenResult> task) {
+                                                            if (task.isSuccessful()) {
+                                                                idToken = task.getResult().getToken();
+                                                                System.out.println("Token: " + idToken);
+                                                                prefs.edit().putString("idToken", idToken).apply();
+                                                                // Send token to your backend via HTTPS
+                                                                // ...
+                                                            } else {
+                                                                // Handle error -> task.getException();
+                                                            }
                                                         }
-                                                    }
-                                                });
+                                                    });
 
-                                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                                        finish();
-                                    }
-                                    else{
-                                        Toast.makeText(LoginActivity.this, "Please verify email address", Toast.LENGTH_SHORT).show();
-                                    }
+                                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                                            finish();
+                                        } else {
+                                            Toast.makeText(LoginActivity.this, "Please verify email address", Toast.LENGTH_SHORT).show();
+                                        }
 //                                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
 //                                    finish();
-                                } else {
-                                    Toast.makeText(LoginActivity.this, "Login Failed", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(LoginActivity.this, "Login Failed", Toast.LENGTH_SHORT).show();
+                                    }
                                 }
                             }
-                        }
-                );
+                    );
+                }
             }
         });
 
 
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

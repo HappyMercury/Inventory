@@ -20,6 +20,9 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class RegisterActivity extends AppCompatActivity {
 
     EditText emailtxt;
@@ -66,8 +69,16 @@ public class RegisterActivity extends AppCompatActivity {
                 String repassword = repwd.getText().toString();
                 String emailID = emailtxt.getText().toString();
 
+                Pattern emailPattern = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\\\.[A-Z]{2,6}$");
+                Matcher emailmatcher = emailPattern.matcher(emailID);
+                boolean b = emailmatcher.matches();
+
                 if(!password.equals(repassword)){
                     Toast.makeText(RegisterActivity.this, "Passwords do not match", Toast.LENGTH_SHORT).show();
+                }
+                else if(b == false)
+                {
+                    Toast.makeText(RegisterActivity.this, "Enter a vaild email address", Toast.LENGTH_SHORT).show();
                 }
                 else{
                     firebaseAuth.createUserWithEmailAndPassword(emailID, password).addOnCompleteListener(

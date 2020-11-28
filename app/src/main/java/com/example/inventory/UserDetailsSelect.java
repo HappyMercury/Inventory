@@ -31,6 +31,7 @@ public class UserDetailsSelect extends AppCompatActivity {
     String Profession;
 
     SharedPreferences preferences;
+    String emailToPassForDetails = LoginActivity.googleEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +39,12 @@ public class UserDetailsSelect extends AppCompatActivity {
         setContentView(R.layout.activity_user_details_select);
         registerbtn = findViewById(R.id.btnContinue);
         username = findViewById(R.id.editTxtUsersNamenew);
+
+        Intent intent = getIntent();
+
+        if(emailToPassForDetails==null) {
+            emailToPassForDetails = intent.getStringExtra("email");
+        }
 
         preferences = getSharedPreferences("com.example.inventory",MODE_PRIVATE);
 
@@ -78,6 +85,7 @@ public class UserDetailsSelect extends AppCompatActivity {
                 try {
                     data.put("profession",Profession);
                     data.put("name",username.getText().toString());
+                    data.put("email",emailToPassForDetails);
                 }
                 catch (Exception e){
                     e.printStackTrace();

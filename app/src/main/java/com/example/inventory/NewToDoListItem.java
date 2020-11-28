@@ -29,25 +29,32 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
+
+import static java.time.LocalDateTime.parse;
 
 public class NewToDoListItem extends AppCompatActivity {
 
     int minute = 0,hour = 0,day = 0,month = 0,year = 0;
     boolean dateTimeOn = false;
     //public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
-    private DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmm", Locale.ENGLISH); //Specify your locale
+//    private DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmm", Locale.ENGLISH); //Specify your locale
     long unixTime;
     String id="";
     String api = ApiEndpoints.toDoEndpoint;
@@ -75,6 +82,7 @@ public class NewToDoListItem extends AppCompatActivity {
             title = startedIntent.getStringExtra("title");
             description = startedIntent.getStringExtra("description");
             unixTime = startedIntent.getLongExtra("time",0);
+            String myDate;
             if(unixTime==0)
             {
                 toggleButton.setChecked(false);
@@ -92,6 +100,17 @@ public class NewToDoListItem extends AppCompatActivity {
                 datePicker.setEnabled(true);
                 timePicker.setVisibility(View.VISIBLE);
                 datePicker.setVisibility(View.VISIBLE);
+                Date date = new Date(unixTime*1000);
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                myDate = format.format(date);
+
+                Pattern p = Pattern.compile(".*[0-9]{2,4}.*");
+                Matcher m = p.matcher(myDate);
+                for(int i=1;i<m.groupCount();i++)
+                {
+                   System.out.println(i+": "+m.group(i));
+                }
+
             }
             id = startedIntent.getStringExtra("id");
 
@@ -104,6 +123,16 @@ public class NewToDoListItem extends AppCompatActivity {
             toDoListDescriptionTextInput.setText(description);
             toDoListTitleTextInput.setText(title);
 
+
+
+        }
+
+        else
+        {
+            dateTimeOn = false;
+            timePicker.setVisibility(View.GONE);
+            datePicker.setVisibility(View.GONE);
+            datePicker.setEnabled(false);
         }
 
 
@@ -141,6 +170,7 @@ public class NewToDoListItem extends AppCompatActivity {
                 {
                     day = datePicker.getDayOfMonth();
                     month = datePicker.getMonth() + 1;
+                    System.out.println("Print month: "+month);
                     year = datePicker.getYear();
 
                     minute = timePicker.getCurrentMinute();
@@ -148,7 +178,6 @@ public class NewToDoListItem extends AppCompatActivity {
 
                     try {
                         unixTime = timeConversion(Integer.toString(month)+"-"+Integer.toString(day)+"-"+Integer.toString(year)+" "+Integer.toString(hour)+":"+Integer.toString(minute)+":00");
-                        //"yyyy-MM-dd HH:mm:ss.SSS"
                         //"mm-dd-yyyy hh:mm:ss"
                     } catch (ParseException e) {
                         e.printStackTrace();
@@ -232,17 +261,12 @@ public class NewToDoListItem extends AppCompatActivity {
 //                e.printStackTrace();
 //            }
 
-            SimpleDateFormat f = new SimpleDateFormat("mm-dd-yyyy hh:mm:ss");
+            SimpleDateFormat f = new SimpleDateFormat("MM-dd-yyyy hh:mm:ss");
             Date d = f.parse(time);
             String str = f.format(d);
             System.out.println("time is: "+str);
             System.out.println("time is 2nd time:"+ d.getTime());
 
-//            String myDate = time;
-//            SimpleDateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//            Date date = dateFormat1.parse(myDate);
-//            long epoch = date.getTime();
-//            System.out.println(epoch);
             unixTime = d.getTime()/1000;
             return unixTime;
         }

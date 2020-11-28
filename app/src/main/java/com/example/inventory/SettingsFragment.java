@@ -20,6 +20,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.GlideBuilder;
 import com.bumptech.glide.request.target.Target;
@@ -31,6 +32,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class SettingsFragment extends Fragment {
 
@@ -75,16 +78,58 @@ public class SettingsFragment extends Fragment {
         //Uri profileImageURL = LoginActivity.signInAccount.getPhotoUrl();
         //Log.i("url",profileImageURL.toString());
 
-        preferences = getActivity().getSharedPreferences("com.example.inventory", Context.MODE_PRIVATE);
+        preferences = getActivity().getSharedPreferences("com.example.inventory", MODE_PRIVATE);
 
         View rootView = inflater.inflate(R.layout.fragment_settings, container, false);
-        TextInputEditText name = rootView.findViewById(R.id.nameTextInputEditText);
-        TextInputEditText email = rootView.findViewById(R.id.emailTextInputEditText);
-        name.setText(LoginActivity.googleName);
-        email.setText(LoginActivity.googleEmail);
+        TextInputEditText nameEditText = rootView.findViewById(R.id.nameTextInputEditText);
+        TextInputEditText emailEditText = rootView.findViewById(R.id.emailTextInputEditText);
+        nameEditText.setText(LoginActivity.googleName);
+        emailEditText.setText(LoginActivity.googleEmail);
         ImageView profileImageView = rootView.findViewById(R.id.profileImageView);
 
+
         Spinner professionSpinner = rootView.findViewById(R.id.profession);
+
+        //making the get request to get the user details and setting the fields
+
+//        JsonObjectRequest userDetailsRequest = new JsonObjectRequest(Request.Method.GET, ApiEndpoints.loginEndpoint, null, new Response.Listener<JSONObject>() {
+//            @Override
+//            public void onResponse(JSONObject response) {
+//                try {
+//
+//
+//                    JSONObject data = response.getJSONObject("data");
+//                    String name = data.getString("name");
+//                    String profession = data.getString("profession");
+//                    String image = data.getString("image");
+//                    String email = data.getString("email");
+//
+//
+//
+//                }
+//                catch(Exception e)
+//                {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//
+//            }
+//        })
+//        {
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError
+//            {
+//                HashMap<String, String> headers = new HashMap<String, String>();
+//                headers.put("authorization", "bearer "+getContext().getSharedPreferences("com.example.inventory",MODE_PRIVATE).getString("idToken",""));
+//                return headers;
+//            }
+//        };
+
+
+
         ArrayList<String> arrayList = new ArrayList<>();
         arrayList.add("WORKING");
         arrayList.add("HOME");
@@ -100,7 +145,7 @@ public class SettingsFragment extends Fragment {
             public void onResponse(JSONObject response) {
                 try {
                     localUserName = response.getJSONObject("data").getString("name");
-                    localUserEmail = response.getJSONObject("data").getString("uid");//have to take email later
+                    localUserEmail = response.getJSONObject("data").getString("email");//have to take email later
                     localUserProfession = response.getJSONObject("data").getString("profession");
                     localUserImage = response.getJSONObject("data").getString("image");
 
@@ -116,8 +161,26 @@ public class SettingsFragment extends Fragment {
                         Log.i("Error: ",e.toString());
                     }
 
-                    name.setText(localUserName);
-                    email.setText(localUserEmail);
+                    nameEditText.setText(localUserName);
+                    emailEditText.setText(localUserEmail);
+
+                    switch (localUserProfession)
+                    {
+                        case "home":
+                            professionSpinner.setPrompt("HOME");
+                            break;
+                        case "working":
+                            professionSpinner.setPrompt("WORKING");
+                            break;
+                        case "job_seekers":
+                            professionSpinner.setPrompt("JOB SEEKER");
+                            break;
+                        case "bachelor":
+                            professionSpinner.setPrompt("BACHELOR");
+                            break;
+
+
+                    }
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -139,6 +202,7 @@ public class SettingsFragment extends Fragment {
             }
         };
 
+        Volley.newRequestQueue(getContext()).add(detailsRequest);
 
 
         try {
@@ -154,4 +218,5 @@ public class SettingsFragment extends Fragment {
 
         return rootView;
     }
+
 }

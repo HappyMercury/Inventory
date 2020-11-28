@@ -39,6 +39,7 @@ public class VerifyPhone extends AppCompatActivity {
     static String idToken;
     private boolean mVerificationInProgress = false;
     SharedPreferences preferences;
+    private String emailFromPhoneLogin;
 
 
     @Override
@@ -57,6 +58,7 @@ public class VerifyPhone extends AppCompatActivity {
         //and sending the verification code to the number
         Intent intent = getIntent();
         String mobile = intent.getStringExtra("mobile");
+        emailFromPhoneLogin = intent.getStringExtra("email");
         startPhoneNumberVerification(mobile);
 
 
@@ -206,7 +208,9 @@ public class VerifyPhone extends AppCompatActivity {
                                     if(isNew == true)
                                     {
                                         System.out.println("NEW USER");
-                                        startActivity(new Intent(VerifyPhone.this, UserDetailsSelect.class));
+                                        Intent intent = new Intent(VerifyPhone.this, UserDetailsSelect.class);
+                                        intent.putExtra("email",emailFromPhoneLogin);
+                                        startActivity(intent);
                                         //finish();
                                     }
                                     else

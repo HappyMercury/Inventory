@@ -147,6 +147,7 @@ public class RegisterActivity extends AppCompatActivity {
                                                     try {
                                                         data.put("profession",ProfessionEmail);
                                                         data.put("name",UsersName);
+                                                        data.put("email",emailID);
                                                     }
                                                     catch (Exception e){
                                                         e.printStackTrace();

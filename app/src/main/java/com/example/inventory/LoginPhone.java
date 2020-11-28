@@ -13,6 +13,8 @@ public class LoginPhone extends AppCompatActivity {
     private EditText editTextMobile;
     Button btnContinue;
     FirebaseUser currentUser;
+    private EditText editTextEmail;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,6 +23,7 @@ public class LoginPhone extends AppCompatActivity {
         editTextMobile = findViewById(R.id.editTextMobile);
         btnContinue = findViewById(R.id.buttonContinue);
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        editTextEmail = findViewById(R.id.editTextPhoneLoginEmail);
 
         //check whether the user is logged in
         if (currentUser != null) {
@@ -42,6 +45,7 @@ public class LoginPhone extends AppCompatActivity {
 
                     Intent intent = new Intent(LoginPhone.this, VerifyPhone.class);
                     intent.putExtra("mobile", "91"+mobileNo);
+                    intent.putExtra("email",editTextEmail.getText().toString());
                     startActivity(intent);
                 }
             });

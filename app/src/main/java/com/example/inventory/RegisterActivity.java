@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
@@ -15,6 +16,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -48,6 +50,7 @@ public class RegisterActivity extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
     CheckBox showbtn;
     String ProfessionEmail;
+    TextView txtPwdInstructions;
 
     SharedPreferences preferences;
 
@@ -63,6 +66,7 @@ public class RegisterActivity extends AppCompatActivity {
         showbtn = findViewById(R.id.showPwd);
         Name = findViewById(R.id.editTxtName);
         UsernameEmail = findViewById(R.id.editTxtName);
+        txtPwdInstructions = findViewById(R.id.PwdInstructions);
         firebaseAuth = FirebaseAuth.getInstance();
 
         preferences = getSharedPreferences("com.example.inventory",MODE_PRIVATE);
@@ -122,6 +126,16 @@ public class RegisterActivity extends AppCompatActivity {
                 Pattern emailPattern = Pattern.compile("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$");
                 Matcher emailmatcher = emailPattern.matcher(emailID);
                 boolean b = emailmatcher.matches();
+                Pattern PwdPattern = Pattern.compile("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$");
+                Matcher PwdMatcher = PwdPattern.matcher(password);
+                boolean isvalidPwd = PwdMatcher.matches();
+
+                if(isvalidPwd == false)
+                {
+                    Toast.makeText(RegisterActivity.this, "Enter a valid password", Toast.LENGTH_SHORT).show();
+                    txtPwdInstructions.setTextColor(Color.parseColor("#ff3636"));
+                    return;
+                }
 
                 if(!password.equals(repassword)){
                     Toast.makeText(RegisterActivity.this, "Passwords do not match", Toast.LENGTH_SHORT).show();

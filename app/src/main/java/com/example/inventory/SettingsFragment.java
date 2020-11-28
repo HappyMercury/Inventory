@@ -50,6 +50,7 @@ public class SettingsFragment extends Fragment {
 
     SharedPreferences preferences;
 
+
     public SettingsFragment() {
     }
 
@@ -83,61 +84,10 @@ public class SettingsFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_settings, container, false);
         TextInputEditText nameEditText = rootView.findViewById(R.id.nameTextInputEditText);
         TextInputEditText emailEditText = rootView.findViewById(R.id.emailTextInputEditText);
+        TextInputEditText professionSettingsEditText = rootView.findViewById(R.id.userSettingsProfession);
         nameEditText.setText(LoginActivity.googleName);
         emailEditText.setText(LoginActivity.googleEmail);
         ImageView profileImageView = rootView.findViewById(R.id.profileImageView);
-
-
-        Spinner professionSpinner = rootView.findViewById(R.id.profession);
-
-        //making the get request to get the user details and setting the fields
-
-//        JsonObjectRequest userDetailsRequest = new JsonObjectRequest(Request.Method.GET, ApiEndpoints.loginEndpoint, null, new Response.Listener<JSONObject>() {
-//            @Override
-//            public void onResponse(JSONObject response) {
-//                try {
-//
-//
-//                    JSONObject data = response.getJSONObject("data");
-//                    String name = data.getString("name");
-//                    String profession = data.getString("profession");
-//                    String image = data.getString("image");
-//                    String email = data.getString("email");
-//
-//
-//
-//                }
-//                catch(Exception e)
-//                {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//
-//            }
-//        })
-//        {
-//            @Override
-//            public Map<String, String> getHeaders() throws AuthFailureError
-//            {
-//                HashMap<String, String> headers = new HashMap<String, String>();
-//                headers.put("authorization", "bearer "+getContext().getSharedPreferences("com.example.inventory",MODE_PRIVATE).getString("idToken",""));
-//                return headers;
-//            }
-//        };
-
-
-
-        ArrayList<String> arrayList = new ArrayList<>();
-        arrayList.add("WORKING");
-        arrayList.add("HOME");
-        arrayList.add("JOB SEEKER");
-        arrayList.add("BACHELOR");
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getContext(),android.R.layout.simple_spinner_item, arrayList);
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        professionSpinner.setAdapter(arrayAdapter);
 
         //sending request to get user details
         JsonObjectRequest detailsRequest = new JsonObjectRequest(Request.Method.GET, ApiEndpoints.loginEndpoint, null, new Response.Listener<JSONObject>() {
@@ -164,23 +114,27 @@ public class SettingsFragment extends Fragment {
                     nameEditText.setText(localUserName);
                     emailEditText.setText(localUserEmail);
 
-                    switch (localUserProfession)
+                    localUserProfession.trim();
+
+                    System.out.println("profession:"+localUserProfession+"12344");
+
+                    if(localUserProfession.equals("home"))
                     {
-                        case "home":
-                            professionSpinner.setPrompt("HOME");
-                            break;
-                        case "working":
-                            professionSpinner.setPrompt("WORKING");
-                            break;
-                        case "job_seekers":
-                            professionSpinner.setPrompt("JOB SEEKER");
-                            break;
-                        case "bachelor":
-                            professionSpinner.setPrompt("BACHELOR");
-                            break;
-
-
+                        professionSettingsEditText.setText("HOME");
                     }
+                    else if(localUserProfession.equals("working"))
+                    {
+                        professionSettingsEditText.setText("WORKING");
+                    }
+                    else if(localUserProfession.equals("job_seekers"))
+                    {
+                        professionSettingsEditText.setText("JOB SEEKER");
+                    }
+                    else if(localUserProfession.equals("bachelors"))
+                    {
+                        professionSettingsEditText.setText("BACHELOR");
+                    }
+
 
                 } catch (JSONException e) {
                     e.printStackTrace();

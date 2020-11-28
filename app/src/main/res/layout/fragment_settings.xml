@@ -74,14 +74,14 @@
                 android:layout_below="@id/emailTextInputLayout"
                 android:id="@+id/occupationTextInputLayout"
                 android:layout_margin="8dp"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                >
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
 
-                <Spinner
+                <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/profession"
-                    android:elevation="8dp" />
+                    android:layout_height="match_parent"
+                    android:hint="Profession"
+                    android:id="@+id/userSettingsProfession"/>
+
 
             </com.google.android.material.textfield.TextInputLayout>
 

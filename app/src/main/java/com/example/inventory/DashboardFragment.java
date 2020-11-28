@@ -134,7 +134,7 @@ public class DashboardFragment extends Fragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getActivity(), "Category Name error", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getActivity(), "Category Name error", Toast.LENGTH_SHORT).show();
             }
         }) {
             @Override

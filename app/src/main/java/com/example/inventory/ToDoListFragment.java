@@ -6,52 +6,38 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import androidx.fragment.app.Fragment;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.ConnectionSpec;
-import okhttp3.HttpUrl;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.RequestBody;
 import pl.droidsonroids.gif.GifImageView;
 
 
@@ -277,8 +263,25 @@ public class ToDoListFragment extends Fragment {
         String message="";
         for(int i=0;i<titleArrayList.size();i++)
         {
-            message+=Integer.toString(i+1)+") Title: "+titleArrayList.get(i)+"\nDescription: "+descriptionArrayList.get(i)+"\nReminder Time: "+timeArrayList.get(i)+"\n\n";
+            Date date = new Date(timeArrayList.get(i));
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String myDate = format.format(date);
+            String FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
+            String time = "";
+            long timeStampMillis = 0;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                timeStampMillis = timeArrayList.get(i)*1000;
+                ZoneId zone = ZoneId.systemDefault();
+                DateTimeFormatter df = DateTimeFormatter.ofPattern(FORMAT).withZone(zone);
+                time = df.format(Instant.ofEpochMilli(timeStampMillis));
+                System.out.println("Formatted Date " + time);
+            }
+
+
+            System.out.println("Time converted from : "+myDate);
+            message+=Integer.toString(i+1)+") Title: "+titleArrayList.get(i)+"\nDescription: "+descriptionArrayList.get(i)+"\nReminder Time: "+time+"\n\n";
         }
+
         return message;
     }
 

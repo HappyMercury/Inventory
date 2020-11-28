@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.share:
                 Intent email = new Intent(Intent.ACTION_SEND);
                 email.putExtra(Intent.EXTRA_EMAIL, new String[]{});
-                email.putExtra(Intent.EXTRA_SUBJECT, "From Inventory App");
+//                email.putExtra(Intent.EXTRA_SUBJECT, "From Inventory App");
                 //adding message which is to be done after getting data from fragment
                 String message="";
                 switch(i)
@@ -157,9 +157,9 @@ public class MainActivity extends AppCompatActivity {
                 email.putExtra(Intent.EXTRA_TEXT, message);
 
 //need this to prompts email client only
-                email.setType("message/rfc822");
+                email.setType("text/plain");
 
-                startActivity(Intent.createChooser(email, "Choose an Email client :"));
+                startActivity(Intent.createChooser(email, "Choose an share client :"));
                 break;
             default:
                 super.onOptionsItemSelected(item);

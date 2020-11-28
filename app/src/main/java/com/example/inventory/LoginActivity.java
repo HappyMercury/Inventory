@@ -204,22 +204,7 @@ public class LoginActivity extends AppCompatActivity {
                     });
 
 
-//            LoginActivity.prefs.edit().remove("idToken").commit();
-//            FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
-//            mUser.getIdToken(true)
-//                    .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
-//                        public void onComplete(@NonNull Task<GetTokenResult> task) {
-//                            if (task.isSuccessful()) {
-//                                idToken = task.getResult().getToken();
-//                                System.out.println("Token: "+idToken);
-//                                prefs.edit().putString("idToken", idToken).apply();
-//                                // Send token to your backend via HTTPS
-//                                // ...
-//                            } else {
-//                                // Handle error -> task.getException();
-//                            }
-//                        }
-//                    });
+
 
             Toast.makeText(this, "User is already logged in", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(this,MainActivity.class);
@@ -311,24 +296,6 @@ public class LoginActivity extends AppCompatActivity {
                                                         }
                                                     });
 
-//                                            FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
-//                                            mUser.getIdToken(true)
-//                                                    .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
-//                                                        public void onComplete(@NonNull Task<GetTokenResult> task) {
-//                                                            if (task.isSuccessful()) {
-//                                                                LoginActivity.prefs.edit().remove("idToken").commit();
-//                                                                idToken = task.getResult().getToken();
-//                                                                System.out.println("Token: " + idToken);
-//                                                                prefs.edit().putString("idToken", idToken).apply();
-//                                                                // Send token to your backend via HTTPS
-//                                                                // ...
-//                                                            } else {
-//                                                                // Handle error -> task.getException();
-//                                                            }
-//                                                        }
-//                                                    });
-
-                                            //for sending user details via email login
 
                                             ///ending the last comment
 
@@ -342,8 +309,7 @@ public class LoginActivity extends AppCompatActivity {
                                         } else {
                                             Toast.makeText(LoginActivity.this, "Please verify email address", Toast.LENGTH_SHORT).show();
                                         }
-//                                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
-//                                    finish();
+
                                     } else {
                                         Toast.makeText(LoginActivity.this, "Login Failed", Toast.LENGTH_SHORT).show();
                                     }
@@ -395,21 +361,7 @@ public class LoginActivity extends AppCompatActivity {
                                 });
 
 
-//                        FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
-//                        mUser.getIdToken(true)
-//                                .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
-//                                    public void onComplete(@NonNull Task<GetTokenResult> task) {
-//                                        if (task.isSuccessful()) {
-//                                            idToken = task.getResult().getToken();
-//                                            System.out.println("Token: "+idToken);
-//                                            prefs.edit().putString("idToken", idToken).apply();
-//                                            // Send token to your backend via HTTPS
-//                                            // ...
-//                                        } else {
-//                                            // Handle error -> task.getException();
-//                                        }
-//                                    }
-//                                });
+
                         googleName = mUser.getDisplayName();
                         googleEmail = mUser.getEmail();
                         googlePhotoURL = mUser.getPhotoUrl();
@@ -424,7 +376,6 @@ public class LoginActivity extends AppCompatActivity {
                         else
                         {
                             System.out.println("OLD USER");
-                            System.out.println("MAin to yeahan hoon");
                             startActivity(new Intent(getApplicationContext(),MainActivity.class).putExtra("token",idToken));
                         }
 

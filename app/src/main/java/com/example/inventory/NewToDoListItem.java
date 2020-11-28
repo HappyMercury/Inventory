@@ -53,8 +53,7 @@ public class NewToDoListItem extends AppCompatActivity {
 
     int minute = 0,hour = 0,day = 0,month = 0,year = 0;
     boolean dateTimeOn = false;
-    //public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
-//    private DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmm", Locale.ENGLISH); //Specify your locale
+
     long unixTime;
     String id="";
     String api = ApiEndpoints.toDoEndpoint;
@@ -253,13 +252,7 @@ public class NewToDoListItem extends AppCompatActivity {
 
         public long timeConversion(String time) throws ParseException {
             long unixTime = 0;
-//            dateFormat.setTimeZone(TimeZone.getTimeZone("GMT+5:30")); //Specify your timezone
-//            try {
-//                unixTime = dateFormat.parse(time).getTime();
-//                unixTime = unixTime / 1000;
-//            } catch (ParseException e) {
-//                e.printStackTrace();
-//            }
+
 
             SimpleDateFormat f = new SimpleDateFormat("MM-dd-yyyy hh:mm:ss");
             Date d = f.parse(time);

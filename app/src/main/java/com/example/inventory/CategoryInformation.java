@@ -45,8 +45,13 @@ public class CategoryInformation extends AppCompatActivity {
     ArrayList<Integer> itemQuantityList = new ArrayList<>();
     ArrayList<String> itemIdList = new ArrayList<>();
     Intent intent;
+    ArrayList<String> itemImageList = new ArrayList<>();
 
     SharedPreferences preferences;
+    ArrayList<ItemListElement> itemArrayList;
+    ItemListElementAdapter itemListElementAdapter;
+    ListView itemListView;
+    GifImageView emptyImageView;
 
 
     @SuppressLint("ResourceType")
@@ -57,13 +62,13 @@ public class CategoryInformation extends AppCompatActivity {
 
         preferences = getSharedPreferences("com.example.inventory", MODE_PRIVATE);
 
-        GifImageView emptyImageView = findViewById(R.id.emptyImageView);
+        emptyImageView = findViewById(R.id.emptyImageView);
         emptyImageView.setVisibility(View.GONE);
 
-        ArrayList<ItemListElement> itemArrayList = new ArrayList<ItemListElement>();
-        ItemListElementAdapter itemListElementAdapter = new ItemListElementAdapter(CategoryInformation.this,0,itemArrayList);
+        itemArrayList = new ArrayList<ItemListElement>();
+        itemListElementAdapter = new ItemListElementAdapter(CategoryInformation.this,0,itemArrayList);
 
-        ListView itemListView = findViewById(R.id.itemListView);
+        itemListView = findViewById(R.id.itemListView);
         itemListView.setAdapter(itemListElementAdapter);
 
         intent = getIntent();
@@ -82,6 +87,7 @@ public class CategoryInformation extends AppCompatActivity {
                                 itemNamesList.add(response.getJSONArray("data").getJSONObject(i).getJSONArray("items").getJSONObject(j).getString("name"));
                                 itemQuantityList.add(response.getJSONArray("data").getJSONObject(i).getJSONArray("items").getJSONObject(j).getInt("quantity"));
                                 itemIdList.add(response.getJSONArray("data").getJSONObject(i).getJSONArray("items").getJSONObject(j).getString("_id"));
+                                itemImageList.add(response.getJSONArray("data").getJSONObject(i).getJSONArray("items").getJSONObject(j).getString("image"));
                             }
                         }
                     }
@@ -101,7 +107,6 @@ public class CategoryInformation extends AppCompatActivity {
 
                 itemListElementAdapter.notifyDataSetChanged();
                 itemListView.setAdapter(itemListElementAdapter);
-                System.out.println("Size hai bhiay size: "+itemArrayList.size());
                 if(itemArrayList.size()>0)
                 {
                     itemListView.setVisibility(View.VISIBLE);
@@ -142,6 +147,7 @@ public class CategoryInformation extends AppCompatActivity {
                 intent.putExtra("item quantity",itemQuantityList.get(position));
                 intent.putExtra("category name",categoryName);
                 intent.putExtra("position",position);
+                intent.putExtra("itemURL",itemImageList.get(position));
                 startActivity(intent);
             }
         });
@@ -234,4 +240,63 @@ public class CategoryInformation extends AppCompatActivity {
         queue.add(request);
     }
 
+    @Override
+    protected void onResume() {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, ApiEndpoints.inventoryEndpoint, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+
+                System.out.println("this is getting called");
+                try
+                {
+                    for(int i=0;i<response.getJSONArray("data").length();i++) {
+                        System.out.println("Value of i: " + i);
+                        if (response.getJSONArray("data").getJSONObject(i).getString("category").equals(categoryName)) {
+                            for (int j = 0; j < response.getJSONArray("data").getJSONObject(i).getJSONArray("items").length(); j++) {
+                                itemNamesList.add(response.getJSONArray("data").getJSONObject(i).getJSONArray("items").getJSONObject(j).getString("name"));
+                                itemQuantityList.add(response.getJSONArray("data").getJSONObject(i).getJSONArray("items").getJSONObject(j).getInt("quantity"));
+                                itemIdList.add(response.getJSONArray("data").getJSONObject(i).getJSONArray("items").getJSONObject(j).getString("_id"));
+                                itemImageList.add(response.getJSONArray("data").getJSONObject(i).getJSONArray("items").getJSONObject(j).getString("image"));
+                            }
+                        }
+                    }
+
+                    itemArrayList = new ArrayList<ItemListElement>();
+                    for(int i=0;i<itemNamesList.size();i++)
+                    {
+                        itemArrayList.add(new ItemListElement(itemNamesList.get(i),itemQuantityList.get(i)<=2?true:false));
+                    }
+
+                }
+                catch (JSONException e)
+                {
+                    e.printStackTrace();
+                }
+
+                itemListElementAdapter = new ItemListElementAdapter(CategoryInformation.this,0,itemArrayList);
+                itemListView.setAdapter(itemListElementAdapter);
+                if(itemArrayList.size()>0)
+                {
+                    itemListView.setVisibility(View.VISIBLE);
+                    emptyImageView.setVisibility(View.GONE);
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(CategoryInformation.this, "Category Name error", Toast.LENGTH_SHORT).show();
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                // String idToken = LoginActivity.prefs.getString("idToken", "");
+                headers.put("authorization", "bearer " + preferences.getString("idToken",""));//LoginActivity.prefs.getString("idToken", "0"));
+                return headers;
+            }
+        };
+        Volley.newRequestQueue(this).add(request);
+        super.onResume();
+    }
 }

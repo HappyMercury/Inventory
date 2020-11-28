@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -101,6 +102,7 @@ public class LoginActivity extends AppCompatActivity {
                 return headers;
             }
         };
+
         Volley.newRequestQueue(LoginActivity.this).add(jsonObjectRequest);
     }
 
@@ -117,7 +119,10 @@ public class LoginActivity extends AppCompatActivity {
         showPwdLogin = findViewById(R.id.showPwdLogin);
         prefs = getSharedPreferences("com.example.inventory", Context.MODE_PRIVATE);
 
-
+        Intent emailIntent = getIntent();
+        String emailLoginEmail = emailIntent.getStringExtra("emailLoginEmail");
+        String emailLoginProfession = emailIntent.getStringExtra("emailLoginProfession");
+        String emailLoginName = emailIntent.getStringExtra("emailLoginName");
 
         firebaseAuth = FirebaseAuth.getInstance();
 
@@ -323,8 +328,16 @@ public class LoginActivity extends AppCompatActivity {
 //                                                        }
 //                                                    });
 
+                                            //for sending user details via email login
 
-                                            startActivity(new Intent(LoginActivity.this, MainActivity.class).putExtra("token",idToken));
+                                            ///ending the last comment
+
+                                            Intent intent= new Intent(LoginActivity.this,MainActivity.class);
+                                            intent.putExtra("emailLoginEmail",emailLoginEmail);
+                                            intent.putExtra("emailLoginName",emailLoginName);
+                                            intent.putExtra("emailLoginProfession",emailLoginProfession);
+                                            intent.putExtra("token",idToken);
+                                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
                                             finish();
                                         } else {
                                             Toast.makeText(LoginActivity.this, "Please verify email address", Toast.LENGTH_SHORT).show();

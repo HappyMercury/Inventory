@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -51,6 +52,7 @@ public class RegisterActivity extends AppCompatActivity {
     CheckBox showbtn;
     String ProfessionEmail;
     TextView txtPwdInstructions;
+    public static boolean FLAG = false;
 
     SharedPreferences preferences;
 
@@ -65,7 +67,7 @@ public class RegisterActivity extends AppCompatActivity {
         signup = findViewById(R.id.SignUpBtn);
         showbtn = findViewById(R.id.showPwd);
         Name = findViewById(R.id.editTxtName);
-        UsernameEmail = findViewById(R.id.editTxtName);
+//        UsernameEmail = findViewById(R.id.editTxtName);
         txtPwdInstructions = findViewById(R.id.PwdInstructions);
         firebaseAuth = FirebaseAuth.getInstance();
 
@@ -157,11 +159,15 @@ public class RegisterActivity extends AppCompatActivity {
                                             public void onComplete(@NonNull Task<Void> task) {
                                                 if(task.isSuccessful()){
 
+
                                                     JSONObject data = new JSONObject();
                                                     try {
                                                         data.put("profession",ProfessionEmail);
                                                         data.put("name",UsersName);
                                                         data.put("email",emailID);
+                                                        System.out.println("profession:"+ProfessionEmail);
+                                                        System.out.println("name:" +UsersName);
+                                                        System.out.println("email:"+emailID);
                                                     }
                                                     catch (Exception e){
                                                         e.printStackTrace();
@@ -191,7 +197,13 @@ public class RegisterActivity extends AppCompatActivity {
                                                         }
                                                     };
 
+                                                    jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(5000,
+                                                            DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                                                            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
                                                     Volley.newRequestQueue(RegisterActivity.this).add(jsonObjectRequest);
+
+
+                                                    FLAG = true;
 
                                                     Toast.makeText(RegisterActivity.this, "SignUp Complete, please verify your email", Toast.LENGTH_SHORT)
                                                             .show();
@@ -202,7 +214,11 @@ public class RegisterActivity extends AppCompatActivity {
                                                     Toast.makeText(RegisterActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                                 }
 
-
+                                                Intent intent = new Intent(RegisterActivity.this,LoginActivity.class);
+                                                intent.putExtra("emailLoginEmail",emailID);
+                                                intent.putExtra("emailLoginName",UsersName);
+                                                intent.putExtra("emailLoginProfession",ProfessionEmail);
+                                                startActivity(intent);
                                                 finish();
 
                                             }

@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -65,12 +66,16 @@ public class MainActivity extends AppCompatActivity {
 
         token = getIntent().getStringExtra("token");
 
+        String emailLoginEmail = getIntent().getStringExtra("emailLoginEmail");
+        String emailLoginProfession = getIntent().getStringExtra("emailLoginProfession");
+        String emailLoginName = getIntent().getStringExtra("emailLoginName");
 
-
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
 
         Intent intent = getIntent();
         i = intent.getIntExtra("FragmentToStart", FRAGMENT_DASHBOARD);
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
+
         //getCategoryInfo();
         showFragment(i);
         switch(i)
@@ -264,4 +269,7 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         //super.onBackPressed();
     }
+
+
+
 }

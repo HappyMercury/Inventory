@@ -30,6 +30,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -51,7 +52,6 @@ import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
 public class AddNewItem extends AppCompatActivity {
 
     ImageView itemImageView;
-    FloatingActionButton addItemImageFloatingActionButton;
     TextInputEditText itemNameEditText;
     ImageButton increase,decrease;
     TextView itemCount;
@@ -66,6 +66,7 @@ public class AddNewItem extends AppCompatActivity {
     String updateName;
     int updateQuantity;
     int position;
+    String updateURL;
 
     String action;
 
@@ -104,7 +105,6 @@ public class AddNewItem extends AppCompatActivity {
 
         itemImageView = findViewById(R.id.itemImage);
 
-        addItemImageFloatingActionButton = findViewById(R.id.itemImageFloatingActionButton);
 
         itemNameEditText = findViewById(R.id.itemNameTextInputEditText);
 
@@ -113,12 +113,6 @@ public class AddNewItem extends AppCompatActivity {
         increase = findViewById(R.id.increment);
         decrease = findViewById(R.id.decrement);
 
-        addItemImageFloatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //image clicking
-            }
-        });
 
         increase.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,11 +144,18 @@ public class AddNewItem extends AppCompatActivity {
             updateName = startedIntent.getStringExtra("item name");
             categoryName = startedIntent.getStringExtra("category name");
             updateQuantity = startedIntent.getIntExtra("item quantity",0);
+            updateURL = startedIntent.getStringExtra("itemURL");
+            Glide.with(this)
+                    .load(updateURL)
+                    .centerCrop()
+                    .override(500,500)
+                    .into(itemImageView);
             itemNameEditText.setText(updateName);
             itemCount.setText(Integer.toString(updateQuantity));
             if(updateQuantity<=2)
             {
-                amazonHeading.setVisibility(View.VISIBLE);amazonLink.setText("https://www.amazon.in/s?k="+updateName);
+                String nameforlink = updateName.replace(" ","+");
+                amazonHeading.setVisibility(View.VISIBLE);amazonLink.setText("https://www.amazon.in/s?k="+nameforlink);
                 amazonLink.setVisibility(View.VISIBLE);
             }
         }
@@ -202,7 +203,7 @@ public class AddNewItem extends AppCompatActivity {
                         }
                     };
 
-                    requestQueue.add(jsonObjectRequest);
+                    Volley.newRequestQueue(AddNewItem.this).add(jsonObjectRequest);
                     Intent categoryInformationIntent = new Intent(AddNewItem.this, CategoryInformation.class);
                     categoryInformationIntent.putExtra("category name", categoryName);
                     startActivity(categoryInformationIntent);
@@ -218,16 +219,6 @@ public class AddNewItem extends AppCompatActivity {
                         data.put("name",itemNameEditText.getText().toString());
                         data.put("quantity", itemCount.getText().toString());
                         System.out.println("quantity: " + itemCount.getText().toString());
-
-//                        //removing previous items
-//                        itemNamesList.remove(position);
-//                        itemQuantityList.remove(position);
-//                        itemIDList.remove(position);
-//
-//                        //adding new items
-//                        itemIDList.add(position,updateId);
-//                        itemNamesList.add(position,updateName);
-//                        itemQuantityList.add(position,Integer.valueOf(itemCount.getText().toString()));
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -253,7 +244,7 @@ public class AddNewItem extends AppCompatActivity {
                         }
                     };
 
-                    requestQueue.add(jsonObjectRequest);
+                    Volley.newRequestQueue(AddNewItem.this).add(jsonObjectRequest);
                     Intent categoryInformationIntent = new Intent(getApplicationContext(), CategoryInformation.class);
                     categoryInformationIntent.putExtra("category name", categoryName);
                     startActivity(categoryInformationIntent);
@@ -262,133 +253,5 @@ public class AddNewItem extends AppCompatActivity {
         });
     }
 
-
-//    /**
-//     * Launching camera app to capture image
-//     */
-//    private void captureImage() {
-//        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//
-//        fileUri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE);
-//
-//        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
-//
-//        // start the image capture Intent
-//        startActivityForResult(intent, CAMERA_CAPTURE_IMAGE_REQUEST_CODE);
-//    }
-//
-//    public Uri getOutputMediaFileUri(int type) {
-//        return Uri.fromFile(getOutputMediaFile(type));
-//    }
-//
-//    private static File getOutputMediaFile(int type) {
-//
-//        // External sdcard location
-//        File mediaStorageDir = new File(
-//                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "");
-//
-//        // Create the storage directory if it does not exist
-//        if (!mediaStorageDir.exists()) {
-//            if (!mediaStorageDir.mkdirs()) {
-//                Log.d(TAG, "Oops! Failed create "
-//                        + "Harsh" + " directory");
-//                return null;
-//            }
-//        }
-//
-//        // Create a media file name
-//        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss",
-//                Locale.getDefault()).format(new Date());
-//        File mediaFile;
-//        if (type == MEDIA_TYPE_IMAGE) {
-//            mediaFile = new File(mediaStorageDir.getPath() + File.separator
-//                    + "IMG_" + timeStamp + ".jpg");
-//        }else {
-//            return null;
-//        }
-//
-//        return mediaFile;
-//    }
-//
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        // if the result is capturing Image
-//        super.onActivityResult(requestCode, resultCode, data);
-//        if (requestCode == CAMERA_CAPTURE_IMAGE_REQUEST_CODE) {
-//            if (resultCode == RESULT_OK) {
-//
-//                // successfully captured the image
-//                // launching upload activity
-//                uploadImage();
-//
-//            } else if (resultCode == RESULT_CANCELED) {
-//
-//                // user cancelled Image capture
-//                Toast.makeText(getApplicationContext(),
-//                        "User cancelled image capture", Toast.LENGTH_SHORT)
-//                        .show();
-//
-//            } else {
-//                // failed to capture image
-//                Toast.makeText(getApplicationContext(),
-//                        "Sorry! Failed to capture image", Toast.LENGTH_SHORT)
-//                        .show();
-//            }
-//        }
-//    }
-//
-//    void uploadImage()
-//    {
-//        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, ApiEndpoints.fileUploadEndpoint, null
-//                , new Response.Listener<JSONObject>() {
-//            @Override
-//            public void onResponse(JSONObject response) {
-//
-//            }
-//        }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//
-//            }
-//        })
-//        {
-//            @Override
-//            public Map<String, String> getHeaders() throws AuthFailureError
-//            {
-//                HashMap<String, String> headers = new HashMap<String, String>();
-//                // String idToken = LoginActivity.prefs.getString("idToken", "");
-//                headers.put("authorization", "bearer "+LoginActivity.prefs.getString("idToken","0"));
-//                return headers;
-//            }
-//            public String getBodyContentType() {
-//                return MULTIPART_FORMDATA;
-//            }
-//
-//            public byte[] getBody(){
-//                    byte b[] = {0};
-//                try {
-//                    b = createPostBody(getParams()).getBytes();
-//                } catch (AuthFailureError authFailureError) {
-//                    authFailureError.printStackTrace();
-//                }
-//                return b;
-//            }
-//
-//        };
-//    }
-//
-//    private String createPostBody(Map<String, String> params) {
-//        StringBuilder sbPost = new StringBuilder();
-//        if (params != null) {
-//            for (String key : params.keySet()) {
-//                if (params.get(key) != null) {
-//                    sbPost.append("\r\n" + "--" + BOUNDARY + "\r\n");
-//                    sbPost.append("Content-Disposition: form-data; name=\"" + key + "\"" + "\r\n\r\n");
-//                    sbPost.append(params.get(key).toString());
-//                }
-//            }
-//        }
-//        return sbPost.toString();
-//    }
 
 }

@@ -285,7 +285,4 @@ public class ToDoListFragment extends Fragment {
         return message;
     }
 
-
-
-
 }

@@ -376,7 +376,8 @@ public class LoginActivity extends AppCompatActivity {
                         else
                         {
                             System.out.println("OLD USER");
-                            startActivity(new Intent(getApplicationContext(),MainActivity.class).putExtra("token",idToken));
+                           Intent intent =  new Intent(getApplicationContext(),MainActivity.class).putExtra("token",idToken);
+                            startActivity(intent.putExtra("fragment to start",MainActivity.FRAGMENT_DASHBOARD));
                         }
 
 

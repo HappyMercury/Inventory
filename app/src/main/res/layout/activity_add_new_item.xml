@@ -97,23 +97,25 @@
                     android:id="@+id/itemSaveButton"/>
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:id="@+id/amazonHeading"
-                    android:text="link for buying item:"
-                    android:layout_below="@id/itemSaveButton"
-                    android:textSize="20sp"
-                    android:layout_margin="8dp"/>
-
-                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/amazonLink"
-                    android:visibility="gone"
-                    android:clickable="true"
+                    android:layout_below="@id/itemSaveButton"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="5dp"
+                    android:text="link for buying item:"
+                    android:textSize="20sp" />
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_below="@id/amazonHeading"
-                    android:textSize="20sp"
-                    android:layout_margin="8dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_centerHorizontal="true"
+                    android:src="@raw/amazon5"
+                    android:id="@+id/amazonLink"
                     android:autoLink="web"/>
 
 

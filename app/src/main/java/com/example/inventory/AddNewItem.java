@@ -91,7 +91,7 @@ public class AddNewItem extends AppCompatActivity {
         setContentView(R.layout.activity_add_new_item);
 
         TextView amazonHeading = findViewById(R.id.amazonHeading);
-        TextView amazonLink = findViewById(R.id.amazonLink);
+        ImageButton amazonLink = findViewById(R.id.amazonLink);
         amazonHeading.setVisibility(View.GONE);
         amazonLink.setVisibility(View.GONE);
 
@@ -155,7 +155,16 @@ public class AddNewItem extends AppCompatActivity {
             if(updateQuantity<=2)
             {
                 String nameforlink = updateName.replace(" ","+");
-                amazonHeading.setVisibility(View.VISIBLE);amazonLink.setText("https://www.amazon.in/s?k="+nameforlink);
+                amazonHeading.setVisibility(View.VISIBLE);//amazonLink.("https://www.amazon.in/s?k="+nameforlink);
+                amazonLink.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View arg0) {
+                        Intent intent =new Intent(Intent.ACTION_VIEW,Uri.parse("https://www.amazon.in/s?k="+nameforlink));
+                        startActivity(intent);
+
+                    }
+                });
                 amazonLink.setVisibility(View.VISIBLE);
             }
         }

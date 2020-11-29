@@ -66,6 +66,7 @@ public class CategoryInformation extends AppCompatActivity {
         emptyImageView.setVisibility(View.GONE);
 
         itemArrayList = new ArrayList<ItemListElement>();
+
         itemListElementAdapter = new ItemListElementAdapter(CategoryInformation.this,0,itemArrayList);
 
         itemListView = findViewById(R.id.itemListView);
